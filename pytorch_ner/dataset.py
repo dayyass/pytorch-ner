@@ -1,8 +1,9 @@
 import numpy as np
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Union
 
 import torch
 from torch.utils.data import Dataset
+from torch.nn.utils.rnn import pad_sequence
 
 from .utils import process_tokens, process_labels
 
@@ -44,6 +45,48 @@ class NERDataset(Dataset):
             tokens = process_tokens(self.token_seq[idx], self.token2idx)
             labels = process_labels(self.label_seq[idx], self.label2idx)
 
-        lengths = len(tokens)
+        lengths = [len(tokens)]
 
-        return np.array(tokens), np.array(lengths), np.array(labels)
+        return np.array(tokens), np.array(labels), np.array(lengths)
+
+
+class NERCollator(object):
+
+    """
+    Collator that handles variable-size sentences.
+    """
+
+    def __init__(
+            self,
+            token_padding_value: int,
+            label_padding_value: int,
+            percentile: Union[int, float] = 100,
+    ):
+        self.token_padding_value = token_padding_value
+        self.label_padding_value = label_padding_value
+        self.percentile = percentile
+
+    def __call__(
+            self,
+            batch: List[Tuple[np.ndarray, np.ndarray, np.ndarray]],
+    ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+
+        tokens, labels, lengths = zip(*batch)
+
+        tokens = [list(i) for i in tokens]
+        labels = [list(i) for i in labels]
+
+        max_len = int(np.percentile(lengths, self.percentile))
+
+        lengths = torch.tensor(
+            np.clip(lengths, a_min=0, a_max=max_len),
+        ).squeeze(-1)
+
+        for i in range(len(batch)):
+            tokens[i] = torch.tensor(tokens[i][:max_len])
+            labels[i] = torch.tensor(labels[i][:max_len])
+
+        tokens = pad_sequence(tokens, padding_value=self.token_padding_value, batch_first=True)
+        labels = pad_sequence(labels, padding_value=self.label_padding_value, batch_first=True)
+
+        return tokens, lengths, labels

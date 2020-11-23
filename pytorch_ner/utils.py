@@ -19,3 +19,6 @@ def process_labels(labels: List[str], label2idx: Dict[str, int]) -> List[int]:
 
     processed_labels = [label2idx[label] for label in labels]
     return processed_labels
+
+
+# TODO: add bio/biluo converters
