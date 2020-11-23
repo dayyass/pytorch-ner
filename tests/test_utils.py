@@ -1,10 +1,6 @@
 import unittest
-
-# TODO: fix it
-import sys
-sys.path.append('../pytorch_ner')
-from prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
-from utils import process_tokens, process_labels
+from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
+from pytorch_ner.utils import process_tokens, process_labels
 
 
 token_seq, label_seq = prepare_conll_data_format('conll.txt')
@@ -28,3 +24,7 @@ class TestUtils(unittest.TestCase):
             process_labels(labels, label2idx),
             [0, 0, 0, 0, 0, 1],
         )
+
+
+if __name__ == '__main__':
+    unittest.main()

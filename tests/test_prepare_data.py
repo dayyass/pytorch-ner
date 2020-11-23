@@ -1,9 +1,5 @@
 import unittest
-
-# TODO: fix it
-import sys
-sys.path.append('../pytorch_ner')
-from prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
+from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 
 
 token_seq, label_seq = prepare_conll_data_format('conll.txt')
