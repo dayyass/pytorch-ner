@@ -89,4 +89,4 @@ class NERCollator(object):
         tokens = pad_sequence(tokens, padding_value=self.token_padding_value, batch_first=True)
         labels = pad_sequence(labels, padding_value=self.label_padding_value, batch_first=True)
 
-        return tokens, lengths, labels
+        return tokens, labels, lengths
