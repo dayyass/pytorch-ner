@@ -1,3 +1,6 @@
+import random
+import numpy as np
+import torch
 from typing import List, Dict
 
 
@@ -19,6 +22,12 @@ def process_labels(labels: List[str], label2idx: Dict[str, int]) -> List[int]:
 
     processed_labels = [label2idx[label] for label in labels]
     return processed_labels
+
+
+def set_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
 
 
 # TODO: add bio/biluo converters
