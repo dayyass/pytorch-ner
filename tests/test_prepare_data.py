@@ -1,8 +1,12 @@
 import unittest
+from collections import Counter
 from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 
 
 token_seq, label_seq = prepare_conll_data_format('conll.txt')
+
+token2cnt = Counter([token for sentence in token_seq for token in sentence])
+label_set = set(label for sentence in label_seq for label in sentence)
 
 
 class TestPrepareConllDataFormat(unittest.TestCase):
@@ -29,7 +33,7 @@ class TestPrepareConllDataFormat(unittest.TestCase):
 class TestToken2idx(unittest.TestCase):
 
     def test_get_token2idx(self):
-        token2idx = get_token2idx(token_seq)
+        token2idx = get_token2idx(token2cnt)
         self.assertEqual(
             token2idx,
             {
@@ -47,7 +51,7 @@ class TestToken2idx(unittest.TestCase):
         )
 
     def test_get_token2idx_special_tokens(self):
-        token2idx = get_token2idx(token_seq, add_pad=False, add_unk=False)
+        token2idx = get_token2idx(token2cnt, add_pad=False, add_unk=False)
         self.assertEqual(
             token2idx,
             {
@@ -63,7 +67,7 @@ class TestToken2idx(unittest.TestCase):
         )
 
     def test_get_token2idx_min_count(self):
-        token2idx = get_token2idx(token_seq, min_count=2)
+        token2idx = get_token2idx(token2cnt, min_count=2)
         self.assertEqual(
             token2idx,
             {
@@ -80,7 +84,7 @@ class TestToken2idx(unittest.TestCase):
 class TestLabel2idx(unittest.TestCase):
 
     def test_get_label2idx(self):
-        label2idx = get_label2idx(label_seq)
+        label2idx = get_label2idx(label_set)
         self.assertEqual(
             label2idx,
             {
