@@ -18,7 +18,7 @@ linear_head = LinearHead(
 
 class TestLinearHead(unittest.TestCase):
 
-    def test_attention_shape(self):
+    def test_linear_shape(self):
         self.assertTrue(
             linear_head(embeddings).size() == torch.Size([10, 20, 5]),
         )
