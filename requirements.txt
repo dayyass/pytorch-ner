@@ -1,0 +1,7 @@
+dataclasses==0.6
+future==0.18.2
+numpy==1.19.4
+pytorch-crf==0.7.2
+torch==1.7.0
+tqdm==4.53.0
+typing-extensions==3.7.4.3
