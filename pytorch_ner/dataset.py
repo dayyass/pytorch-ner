@@ -84,7 +84,9 @@ class NERCollator(object):
             tokens[i] = torch.tensor(tokens[i][:max_len])
             labels[i] = torch.tensor(labels[i][:max_len])
 
-        tokens = pad_sequence(tokens, padding_value=self.token_padding_value, batch_first=True)
-        labels = pad_sequence(labels, padding_value=self.label_padding_value, batch_first=True)
+        sorted_idx = torch.argsort(lengths, descending=True)
+
+        tokens = pad_sequence(tokens, padding_value=self.token_padding_value, batch_first=True)[sorted_idx]
+        labels = pad_sequence(labels, padding_value=self.label_padding_value, batch_first=True)[sorted_idx]
 
         return tokens, labels, lengths
