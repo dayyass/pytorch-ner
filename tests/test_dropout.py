@@ -1,19 +1,22 @@
 import unittest
 import torch
-from pytorch_ner.nn_modules.dropout import SpatialDropout1d
+from pytorch_ner.nn_modules.dropout import SpatialDropout1d, WordEmbeddingsDropout
 from pytorch_ner.utils import set_seed
 
 set_seed(42)  # reproducibility
 
 
-class TestSpatialDropout(unittest.TestCase):
+embeddings = torch.randn(2, 5, 10)  # [batch_size, seq_len, emb_dim]
 
-    spatial_dropout = SpatialDropout1d(p=0.5)
-    embeddings = torch.randn(10, 2, 5)  # [batch_size, seq_len, emb_dim]
+spatial_dropout = SpatialDropout1d(p=0.5)
+word_embeddings_dropout = WordEmbeddingsDropout(p=0.5)
+
+
+class TestDropout(unittest.TestCase):
 
     def test_spatial_dropout(self):
 
-        emb = self.spatial_dropout(self.embeddings)
+        emb = spatial_dropout(embeddings)
         emb_dim_sum = emb.sum(dim=0).sum(dim=0)
 
         self.assertTrue(
@@ -24,6 +27,17 @@ class TestSpatialDropout(unittest.TestCase):
         self.assertTrue(
             torch.equal(
                 torch.tensor(0.), emb_dim_sum[4],  # fifth embedding dim
+            ),
+        )
+
+    def test_word_embeddings_dropout(self):
+
+        emb = word_embeddings_dropout(embeddings)
+        emb_dim_sum = emb.sum(dim=0).sum(dim=-1)
+
+        self.assertTrue(
+            torch.equal(
+                torch.tensor(0.), emb_dim_sum[0],  # first embedding dim
             ),
         )
 
