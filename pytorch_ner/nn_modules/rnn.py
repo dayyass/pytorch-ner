@@ -16,7 +16,6 @@ class DynamicRNN(nn.Module):
             num_layers: int,
             dropout: float,
             bidirectional: bool,
-            batch_first: bool = True,
     ):
         super(DynamicRNN, self).__init__()
         self.rnn = rnn_unit(
@@ -25,7 +24,7 @@ class DynamicRNN(nn.Module):
             num_layers=num_layers,
             dropout=dropout,
             bidirectional=bidirectional,
-            batch_first=batch_first,
+            batch_first=True,
         )
 
     def forward(
@@ -33,7 +32,7 @@ class DynamicRNN(nn.Module):
             x: torch.Tensor,
             x_length: torch.Tensor,
     ) -> torch.Tensor:
-        packed_x = pack_padded_sequence(x, x_length, batch_first=self.batch_first)
+        packed_x = pack_padded_sequence(x, x_length, batch_first=True)
         packed_rnn_out, _ = self.rnn(packed_x)
-        rnn_out, _ = pad_packed_sequence(packed_rnn_out, batch_first=self.batch_first)
+        rnn_out, _ = pad_packed_sequence(packed_rnn_out, batch_first=True)
         return rnn_out
