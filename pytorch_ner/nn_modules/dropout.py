@@ -3,7 +3,6 @@ import torch.nn as nn
 
 
 class SpatialDropout1d(nn.Module):
-
     """
     Spatial Dropout drops a certain percentage of dimensions from each word vector in the training sample.
     implementation: https://discuss.pytorch.org/t/spatial-dropout-in-pytorch/21400;
@@ -22,7 +21,6 @@ class SpatialDropout1d(nn.Module):
 
 
 class WordEmbeddingsDropout(nn.Module):
-
     """
     Word Embeddings Dropout drops a certain percentage of entire words in the training sample.
     explanation: https://arxiv.org/abs/1512.05287v5.

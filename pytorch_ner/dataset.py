@@ -9,7 +9,6 @@ from .utils import process_tokens, process_labels
 
 
 class NERDataset(Dataset):
-
     """
     PyTorch Dataset for NER data format.
     Dataset might be preprocessed for more efficiency.
@@ -51,7 +50,6 @@ class NERDataset(Dataset):
 
 
 class NERCollator(object):
-
     """
     Collator that handles variable-size sentences.
     """

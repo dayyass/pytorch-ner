@@ -5,7 +5,6 @@ from typing import List, Dict
 
 
 def process_tokens(tokens: List[str], token2idx: Dict[str, int], unk: str = '<UNK>') -> List[int]:
-
     """
     Transform list of tokens into list of tokens' indices.
     """
@@ -15,7 +14,6 @@ def process_tokens(tokens: List[str], token2idx: Dict[str, int], unk: str = '<UN
 
 
 def process_labels(labels: List[str], label2idx: Dict[str, int]) -> List[int]:
-
     """
     Transform list of labels into list of labels' indices.
     """
@@ -24,7 +22,11 @@ def process_labels(labels: List[str], label2idx: Dict[str, int]) -> List[int]:
     return processed_labels
 
 
-def set_seed(seed: int):
+def set_global_seed(seed: int):
+    """
+    Set global seed for reproducibility.
+    """
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

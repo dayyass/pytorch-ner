@@ -8,7 +8,6 @@ def prepare_conll_data_format(
     path: str,
     sep: str = '\t',
 ) -> Tuple[List[List[str]], List[List[str]]]:
-
     """
     Prepare data in CoNNL like format.
     Sentences are separated by empty line.
@@ -42,7 +41,6 @@ def get_token2idx(
     add_pad: bool = True,
     add_unk: bool = True,
 ) -> Dict[str, int]:
-
     """
     Get mapping from tokens to indices to use with Embedding layer.
     """
@@ -63,7 +61,6 @@ def get_token2idx(
 
 
 def get_label2idx(label_seq: List[List[str]],) -> Dict[str, int]:
-
     """
     Get mapping from labels to indices.
     """
