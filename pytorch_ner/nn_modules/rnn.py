@@ -32,7 +32,7 @@ class DynamicRNN(nn.Module):
             x: torch.Tensor,
             x_length: torch.Tensor,
     ) -> torch.Tensor:
-        packed_x = pack_padded_sequence(x, x_length, batch_first=True)
+        packed_x = pack_padded_sequence(x, x_length, batch_first=True, enforce_sorted=True)
         packed_rnn_out, _ = self.rnn(packed_x)
         rnn_out, _ = pad_packed_sequence(packed_rnn_out, batch_first=True)
         return rnn_out
