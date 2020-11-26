@@ -3,9 +3,10 @@ repos:
   hooks:
     - id: unittest
       name: unittest
-      description: Run all unittests.
       entry: python -m unittest discover
       language: system
+      description: Run all unittests.
+      always_run: true
       types: [python]
       pass_filenames: false
       stages: [commit]
