@@ -4,7 +4,7 @@ from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, g
 from pytorch_ner.utils import process_tokens, process_labels
 
 
-token_seq, label_seq = prepare_conll_data_format('data/conll.txt')
+token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt')
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))

@@ -6,7 +6,7 @@ from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, g
 from pytorch_ner.dataset import NERDataset, NERCollator
 
 
-token_seq, label_seq = prepare_conll_data_format('data/conll.txt')
+token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt')
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
@@ -74,7 +74,6 @@ class TestCollator(unittest.TestCase):
 
     def test_collator_1(self):
         tokens, labels, lengths = collator_1(batch)
-        print(lengths)
         self.assertTrue(torch.equal(tokens, torch.tensor([[1, 2, 3, 4, 5], [1, 2, 3, 0, 0]])))
         self.assertTrue(torch.equal(labels, torch.tensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]])))
         self.assertTrue(torch.equal(lengths, torch.tensor([5, 3])))
