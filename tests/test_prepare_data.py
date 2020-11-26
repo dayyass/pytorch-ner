@@ -3,7 +3,7 @@ from collections import Counter
 from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 
 
-token_seq, label_seq = prepare_conll_data_format('conll.txt')
+token_seq, label_seq = prepare_conll_data_format('data/conll.txt')
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = set(label for sentence in label_seq for label in sentence)
