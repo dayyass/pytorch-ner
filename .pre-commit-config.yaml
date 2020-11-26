@@ -1,0 +1,11 @@
+repos:
+- repo: local
+  hooks:
+    - id: unittest
+      name: unittest
+      description: Run all unittests.
+      entry: python -m unittest discover
+      language: system
+      types: [python]
+      pass_filenames: false
+      stages: [commit]
