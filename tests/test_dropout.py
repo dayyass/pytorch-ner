@@ -1,12 +1,9 @@
 import unittest
 import torch
 from pytorch_ner.nn_modules.dropout import SpatialDropout1d, WordEmbeddingsDropout
-from pytorch_ner.utils import set_global_seed
-
-set_global_seed(42)  # reproducibility
 
 
-embeddings = torch.randn(2, 5, 128)  # [batch_size, seq_len, emb_dim]
+embeddings = torch.randn(2, 50, 128)  # [batch_size, seq_len, emb_dim]
 
 spatial_dropout = SpatialDropout1d(p=0.5)
 word_embeddings_dropout = WordEmbeddingsDropout(p=0.5)
