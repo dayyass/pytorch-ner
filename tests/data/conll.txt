@@ -3,14 +3,12 @@ is	O
 better	O
 than	O
 ugly	O
-.	B-Puctuation
-
-
+.	B-punctuation
 
 Explicit	O
 is	O
 better	O
 than	O
 implicit	O
-.	B-Puctuation
+.	B-punctuation
 

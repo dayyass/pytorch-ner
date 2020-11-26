@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict, Set
+from typing import Tuple, List, Dict
 from tqdm import tqdm
 
 
@@ -57,7 +57,7 @@ def get_token2idx(
     return token2idx
 
 
-def get_label2idx(label_set: Set[str]) -> Dict[str, int]:
+def get_label2idx(label_set: List[str]) -> Dict[str, int]:
     """
     Get mapping from labels to indices.
     """

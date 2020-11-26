@@ -6,7 +6,9 @@ from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, g
 token_seq, label_seq = prepare_conll_data_format('data/conll.txt')
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
-label_set = set(label for sentence in label_seq for label in sentence)
+label_set = sorted(set(label for sentence in label_seq for label in sentence))
+
+label2idx = get_label2idx(label_set)
 
 
 class TestPrepareConllDataFormat(unittest.TestCase):
@@ -24,8 +26,8 @@ class TestPrepareConllDataFormat(unittest.TestCase):
         self.assertEqual(
             label_seq,
             [
-                ['O', 'O', 'O', 'O', 'O', 'B-Puctuation'],
-                ['O', 'O', 'O', 'O', 'O', 'B-Puctuation'],
+                ['O', 'O', 'O', 'O', 'O', 'B-punctuation'],
+                ['O', 'O', 'O', 'O', 'O', 'B-punctuation'],
             ]
         )
 
@@ -83,15 +85,15 @@ class TestToken2idx(unittest.TestCase):
 
 class TestLabel2idx(unittest.TestCase):
 
+    def test_label2idx_type(self):
+        self.assertTrue(isinstance(label2idx, dict))
+
+    def test_label2idx_set(self):
+        self.assertTrue('O' in label2idx)
+        self.assertTrue('B-punctuation' in label2idx)
+
     def test_get_label2idx(self):
-        label2idx = get_label2idx(label_set)
-        self.assertEqual(
-            label2idx,
-            {
-                'O': 0,
-                'B-Puctuation': 1,
-            }
-        )
+        self.assertEqual(label2idx, {'B-punctuation': 0, 'O': 1})
 
 
 if __name__ == '__main__':
