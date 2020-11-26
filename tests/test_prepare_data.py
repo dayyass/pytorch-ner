@@ -4,6 +4,7 @@ from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, g
 
 
 token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt')
+token_seq_cased, label_seq_cased = prepare_conll_data_format('tests/data/conll.txt', lower=False)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
@@ -16,6 +17,15 @@ class TestPrepareConllDataFormat(unittest.TestCase):
     def test_token_seq(self):
         self.assertEqual(
             token_seq,
+            [
+                ['beautiful', 'is', 'better', 'than', 'ugly', '.'],
+                ['explicit', 'is', 'better', 'than', 'implicit', '.'],
+            ],
+        )
+
+    def test_token_seq_cased(self):
+        self.assertEqual(
+            token_seq_cased,
             [
                 ['Beautiful', 'is', 'better', 'than', 'ugly', '.'],
                 ['Explicit', 'is', 'better', 'than', 'implicit', '.'],
@@ -41,13 +51,13 @@ class TestToken2idx(unittest.TestCase):
             {
                 '<PAD>': 0,
                 '<UNK>': 1,
-                'Beautiful': 2,
+                'beautiful': 2,
                 'is': 3,
                 'better': 4,
                 'than': 5,
                 'ugly': 6,
                 '.': 7,
-                'Explicit': 8,
+                'explicit': 8,
                 'implicit': 9,
             }
         )
@@ -57,13 +67,13 @@ class TestToken2idx(unittest.TestCase):
         self.assertEqual(
             token2idx,
             {
-                'Beautiful': 0,
+                'beautiful': 0,
                 'is': 1,
                 'better': 2,
                 'than': 3,
                 'ugly': 4,
                 '.': 5,
-                'Explicit': 6,
+                'explicit': 6,
                 'implicit': 7,
             }
         )

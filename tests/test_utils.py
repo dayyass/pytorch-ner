@@ -12,7 +12,7 @@ label_set = sorted(set(label for sentence in label_seq for label in sentence))
 token2idx = get_token2idx(token2cnt)
 label2idx = get_label2idx(label_set)
 
-tokens = ['Simple', 'is', 'better', 'than', 'complex', '.']
+tokens = ['simple', 'is', 'better', 'than', 'complex', '.']
 labels = ['O', 'O', 'O', 'O', 'O', 'B-punctuation']
 
 

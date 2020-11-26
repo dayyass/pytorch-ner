@@ -6,6 +6,7 @@ from tqdm import tqdm
 def prepare_conll_data_format(
     path: str,
     sep: str = '\t',
+    lower: bool = True,
 ) -> Tuple[List[List[str]], List[List[str]]]:
     """
     Prepare data in CoNNL like format.
@@ -21,6 +22,8 @@ def prepare_conll_data_format(
         for line in tqdm(fp):
             if line != '\n':
                 token, label = line.strip().split(sep)
+                if lower:
+                    token = token.lower()
                 tokens.append(token)
                 labels.append(label)
             else:
