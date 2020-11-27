@@ -1,16 +1,26 @@
 import unittest
 import numpy as np
 import torch
-from pytorch_ner.nn_modules.embedding import load_word2vec, load_glove, EmbeddingPreTrained
+from pytorch_ner.nn_modules.embedding import load_word2vec, load_glove, fasttext2word2vec, EmbeddingPreTrained
+from pytorch_ner.prepare_data import prepare_conll_data_format
+
+
+token_seq, _ = prepare_conll_data_format(path='tests/data/conll.txt')
+tokens = list(set(token for sentence in token_seq for token in sentence))
 
 _, word2vec_embeddings = load_word2vec(path='tests/data/word2vec.wv')
 _, glove_embeddings = load_glove(path='tests/data/glove.txt')
+_, fasttext_embeddings = fasttext2word2vec(path='tests/data/fasttext.model', tokens=tokens)
+
 
 embedding_w2v_freeze = EmbeddingPreTrained(word2vec_embeddings)
 embedding_w2v_fine_tune = EmbeddingPreTrained(word2vec_embeddings, freeze=False)
 
 embedding_glove_freeze = EmbeddingPreTrained(glove_embeddings)
 embedding_glove_fine_tune = EmbeddingPreTrained(glove_embeddings, freeze=False)
+
+embedding_fasttext_freeze = EmbeddingPreTrained(fasttext_embeddings)
+embedding_fasttext_fine_tune = EmbeddingPreTrained(fasttext_embeddings, freeze=False)
 
 
 class TestLoadEmbedding(unittest.TestCase):
@@ -123,6 +133,27 @@ class TestLoadEmbedding(unittest.TestCase):
         self.assertTrue('<PAD>' not in token2idx)
         self.assertTrue('<UNK>' not in token2idx)
 
+    def test_load_fasttext(self):
+        token2idx, embedding_matrix = fasttext2word2vec(path='tests/data/fasttext.model', tokens=tokens)
+
+        self.assertEqual(len(token2idx), 9)
+        self.assertEqual(len(token2idx), embedding_matrix.shape[0])
+        self.assertEqual(embedding_matrix.shape[-1], 100)
+        self.assertEqual(token2idx['<PAD>'], 0)
+        self.assertTrue(
+            np.allclose(embedding_matrix[0], np.zeros_like(embedding_matrix[0])),
+        )
+
+    def test_load_fasttext_without_pad(self):
+        token2idx, embedding_matrix = fasttext2word2vec(
+            path='tests/data/fasttext.model', tokens=tokens, add_pad=False,
+        )
+
+        self.assertEqual(len(token2idx), 8)
+        self.assertEqual(len(token2idx), embedding_matrix.shape[0])
+        self.assertEqual(embedding_matrix.shape[-1], 100)
+        self.assertTrue('<PAD>' not in token2idx)
+
     def test_compare_word2vec_glove(self):
         token2idx_word2vec, embedding_matrix_word2vec = load_word2vec(path='tests/data/word2vec.wv')
         token2idx_glove, embedding_matrix_glove = load_glove(path='tests/data/glove.txt')
@@ -134,20 +165,33 @@ class TestLoadEmbedding(unittest.TestCase):
 class TestEmbeddingPreTrained(unittest.TestCase):
 
     def test_embedding_shape(self):
+        # word2vec
         self.assertTrue(embedding_w2v_freeze.embedding.weight.shape == torch.Size([10, 100]))
         self.assertTrue(embedding_w2v_fine_tune.embedding.weight.shape == torch.Size([10, 100]))
 
+        # glove
         self.assertTrue(embedding_glove_freeze.embedding.weight.shape == torch.Size([10, 100]))
         self.assertTrue(embedding_glove_fine_tune.embedding.weight.shape == torch.Size([10, 100]))
 
+        # fasttext
+        self.assertTrue(embedding_fasttext_freeze.embedding.weight.shape == torch.Size([9, 100]))
+        self.assertTrue(embedding_fasttext_fine_tune.embedding.weight.shape == torch.Size([9, 100]))
+
     def test_embedding_requires_grad(self):
+        # word2vec
         self.assertFalse(embedding_w2v_freeze.embedding.weight.requires_grad)
         self.assertTrue(embedding_w2v_fine_tune.embedding.weight.requires_grad)
 
+        # glove
         self.assertFalse(embedding_glove_freeze.embedding.weight.requires_grad)
         self.assertTrue(embedding_glove_fine_tune.embedding.weight.requires_grad)
 
+        # fasttext
+        self.assertFalse(embedding_fasttext_freeze.embedding.weight.requires_grad)
+        self.assertTrue(embedding_fasttext_fine_tune.embedding.weight.requires_grad)
+
     def test_embedding_pad(self):
+        # word2vec
         pad_embedding = embedding_w2v_freeze(torch.tensor([0]))
         self.assertTrue(
             torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
@@ -158,6 +202,7 @@ class TestEmbeddingPreTrained(unittest.TestCase):
             torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
         )
 
+        # glove
         pad_embedding = embedding_glove_freeze(torch.tensor([0]))
         self.assertTrue(
             torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
@@ -168,7 +213,19 @@ class TestEmbeddingPreTrained(unittest.TestCase):
             torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
         )
 
+        # fasttext
+        pad_embedding = embedding_fasttext_freeze(torch.tensor([0]))
+        self.assertTrue(
+            torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
+        )
+
+        pad_embedding = embedding_fasttext_fine_tune(torch.tensor([0]))
+        self.assertTrue(
+            torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
+        )
+
     def test_embedding_unk(self):
+        # word2vec
         unk_embedding = embedding_w2v_freeze(torch.tensor([1]))
         self.assertTrue(
             torch.allclose(unk_embedding, embedding_w2v_freeze.embedding.weight[2:].mean(dim=0))
@@ -179,6 +236,7 @@ class TestEmbeddingPreTrained(unittest.TestCase):
             torch.allclose(unk_embedding, embedding_w2v_fine_tune.embedding.weight[2:].mean(dim=0))
         )
 
+        # glove
         unk_embedding = embedding_glove_freeze(torch.tensor([1]))
         self.assertTrue(
             torch.allclose(unk_embedding, embedding_glove_freeze.embedding.weight[2:].mean(dim=0))

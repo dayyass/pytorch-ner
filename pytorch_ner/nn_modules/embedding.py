@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from typing import Tuple, Dict
-from gensim.models import KeyedVectors
+from typing import Tuple, List, Dict
+from gensim.models import KeyedVectors, FastText
 
 
 def load_glove(
@@ -67,6 +67,39 @@ def load_word2vec(
     if add_unk:
         unk_embedding = token_embeddings.mean(axis=0)  # TODO: make better unk embedding initialization
         token_embeddings = np.vstack([unk_embedding, token_embeddings])
+    if add_pad:
+        pad_embedding = np.zeros(shape=token_embeddings.shape[-1])
+        token_embeddings = np.vstack([pad_embedding, token_embeddings])
+
+    return token2idx, token_embeddings
+
+
+def fasttext2word2vec(
+        path: str,
+        tokens: List[str],
+        add_pad: bool = True,
+) -> Tuple[Dict[str, int], np.ndarray]:
+    """
+    Represent train/val/test tokens as fasttext word embeddings (like word2vec) to use with nn.Embeddings.
+    There is no <UNK> token, since all train/val/test tokens have embedding representation.
+    Not suitable for inference (use gensim fasttext model).
+    """
+
+    token2idx = {}
+    token_embeddings = []
+
+    if add_pad:
+        token2idx['<PAD>'] = len(token2idx)
+
+    model = FastText.load(path)
+    for token in tokens:
+        embedding = model.wv[token]
+
+        token2idx[token] = len(token2idx)
+        token_embeddings.append(embedding)
+
+    token_embeddings = np.array(token_embeddings)
+
     if add_pad:
         pad_embedding = np.zeros(shape=token_embeddings.shape[-1])
         token_embeddings = np.vstack([pad_embedding, token_embeddings])
