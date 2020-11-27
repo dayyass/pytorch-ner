@@ -21,6 +21,46 @@ class TestEmbedding(unittest.TestCase):
             np.allclose(embedding_matrix[1], embedding_matrix[2:].mean(axis=0)),
         )
 
+    def test_load_glove_without_pad(self):
+        token2idx, embedding_matrix = load_glove(
+            path='tests/data/glove.txt', add_pad=False,
+        )
+
+        self.assertEqual(len(token2idx), 9)
+        self.assertEqual(len(token2idx), embedding_matrix.shape[0])
+        self.assertEqual(embedding_matrix.shape[-1], 100)
+        self.assertTrue('<PAD>' not in token2idx)
+        self.assertEqual(token2idx['<UNK>'], 0)
+        self.assertTrue(
+            np.allclose(embedding_matrix[0], embedding_matrix[1:].mean(axis=0)),
+        )
+
+    def test_load_glove_without_unk(self):
+        token2idx, embedding_matrix = load_glove(
+            path='tests/data/glove.txt', add_unk=False,
+        )
+
+        self.assertEqual(len(token2idx), 9)
+        self.assertEqual(len(token2idx), embedding_matrix.shape[0])
+        self.assertEqual(embedding_matrix.shape[-1], 100)
+        self.assertEqual(token2idx['<PAD>'], 0)
+        self.assertTrue('<UNK>' not in token2idx)
+        self.assertTrue(
+            np.allclose(embedding_matrix[0], np.zeros_like(embedding_matrix[0])),
+        )
+
+    def test_load_glove_without_pad_unk(self):
+        token2idx, embedding_matrix = load_glove(
+            path='tests/data/glove.txt', add_pad=False, add_unk=False,
+        )
+
+        self.assertEqual(len(token2idx), 8)
+        self.assertEqual(len(token2idx), embedding_matrix.shape[0])
+        self.assertEqual(embedding_matrix.shape[-1], 100)
+        self.assertTrue('<PAD>' not in token2idx)
+        self.assertTrue('<UNK>' not in token2idx)
+
+
     # def test_embedding_shape(self):
     #     self.assertTrue(embedding_w2v_freeze.embedding.weight.shape == torch.Size([10, 100]))
     #     self.assertTrue(embedding_w2v_fine_tune.embedding.weight.shape == torch.Size([10, 100]))
