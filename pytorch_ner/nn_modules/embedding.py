@@ -39,6 +39,35 @@ def load_glove(
     return token2idx, token_embeddings
 
 
+def load_word2vec(
+        path: str,
+        add_pad: bool = True,
+        add_unk: bool = True,
+) -> Tuple[Dict[str, int], np.ndarray]:
+
+    token2idx = {}
+
+    if add_pad:
+        token2idx['<PAD>'] = len(token2idx)
+    if add_unk:
+        token2idx['<UNK>'] = len(token2idx)
+
+    model = KeyedVectors.load_word2vec_format(path)
+    for token in model.index2word:
+        token2idx[token] = len(token2idx)
+
+    token_embeddings = model.vectors
+
+    if add_unk:
+        unk_embedding = token_embeddings.mean(axis=0)  # TODO: make better unk embedding initialization
+        token_embeddings = np.vstack([unk_embedding, token_embeddings])
+    if add_pad:
+        pad_embedding = np.zeros(shape=token_embeddings.shape[-1])
+        token_embeddings = np.vstack([pad_embedding, token_embeddings])
+
+    return token2idx, token_embeddings
+
+
 # class EmbeddingWord2Vec(nn.Module):
 #     """
 #     Init embeddings from gensim word2vec KeyedVectors.
