@@ -3,8 +3,8 @@ from collections import Counter
 from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 
 
-token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt')
-token_seq_cased, label_seq_cased = prepare_conll_data_format('tests/data/conll.txt', lower=False)
+token_seq, label_seq = prepare_conll_data_format(path='tests/data/conll.txt')
+token_seq_cased, label_seq_cased = prepare_conll_data_format(path='tests/data/conll.txt', lower=False)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
