@@ -109,7 +109,7 @@ def fasttext2word2vec(
 
 class EmbeddingPreTrained(nn.Module):
     """
-    Init embeddings layer from word2vec/glove.
+    Init embedding layer from word2vec/glove.
     """
 
     def __init__(self, embedding_matrix: np.ndarray, freeze: bool = True):
@@ -118,6 +118,23 @@ class EmbeddingPreTrained(nn.Module):
         self.embedding = nn.Embedding.from_pretrained(
             torch.tensor(embedding_matrix),
             freeze=freeze,
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.embedding(x)
+
+
+class Embedding(nn.Module):
+    """
+    Init random embedding layer.
+    """
+
+    def __init__(self, num_embeddings: int, embedding_dim: int):
+        super(Embedding, self).__init__()
+
+        self.embedding = nn.Embedding(
+            num_embeddings=num_embeddings,
+            embedding_dim=embedding_dim,
         )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
