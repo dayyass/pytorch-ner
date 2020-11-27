@@ -1,10 +1,19 @@
 import unittest
 import numpy as np
 import torch
-from pytorch_ner.nn_modules.embedding import load_word2vec, load_glove  # EmbeddingWord2Vec, EmbeddingGloVe
+from pytorch_ner.nn_modules.embedding import load_word2vec, load_glove, EmbeddingPreTrained
+
+_, word2vec_embeddings = load_word2vec(path='tests/data/word2vec.wv')
+_, glove_embeddings = load_glove(path='tests/data/glove.txt')
+
+embedding_w2v_freeze = EmbeddingPreTrained(word2vec_embeddings)
+embedding_w2v_fine_tune = EmbeddingPreTrained(word2vec_embeddings, freeze=False)
+
+embedding_glove_freeze = EmbeddingPreTrained(glove_embeddings)
+embedding_glove_fine_tune = EmbeddingPreTrained(glove_embeddings, freeze=False)
 
 
-class TestEmbedding(unittest.TestCase):
+class TestLoadEmbedding(unittest.TestCase):
 
     def test_load_glove(self):
         token2idx, embedding_matrix = load_glove(path='tests/data/glove.txt')
@@ -122,35 +131,63 @@ class TestEmbedding(unittest.TestCase):
         self.assertTrue(embedding_matrix_word2vec.shape == embedding_matrix_glove.shape)
 
 
-    # def test_embedding_shape(self):
-    #     self.assertTrue(embedding_w2v_freeze.embedding.weight.shape == torch.Size([10, 100]))
-    #     self.assertTrue(embedding_w2v_fine_tune.embedding.weight.shape == torch.Size([10, 100]))
-    #
-    # def test_embedding_requires_grad(self):
-    #     self.assertFalse(embedding_w2v_freeze.embedding.weight.requires_grad)
-    #     self.assertTrue(embedding_w2v_fine_tune.embedding.weight.requires_grad)
-    #
-    # def test_embedding_pad(self):
-    #     pad_embedding = embedding_w2v_freeze(torch.tensor([0]))
-    #     self.assertTrue(
-    #         torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
-    #     )
-    #
-    #     pad_embedding = embedding_w2v_fine_tune(torch.tensor([0]))
-    #     self.assertTrue(
-    #         torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
-    #     )
-    #
-    # def test_embedding_unk(self):
-    #     unk_embedding = embedding_w2v_freeze(torch.tensor([1]))
-    #     self.assertTrue(
-    #         torch.allclose(unk_embedding, embedding_w2v_freeze.embedding.weight[2:].mean(dim=0))
-    #     )
-    #
-    #     unk_embedding = embedding_w2v_fine_tune(torch.tensor([1]))
-    #     self.assertTrue(
-    #         torch.allclose(unk_embedding, embedding_w2v_fine_tune.embedding.weight[2:].mean(dim=0))
-    #     )
+class TestEmbeddingPreTrained(unittest.TestCase):
+
+    def test_embedding_shape(self):
+        self.assertTrue(embedding_w2v_freeze.embedding.weight.shape == torch.Size([10, 100]))
+        self.assertTrue(embedding_w2v_fine_tune.embedding.weight.shape == torch.Size([10, 100]))
+
+        self.assertTrue(embedding_glove_freeze.embedding.weight.shape == torch.Size([10, 100]))
+        self.assertTrue(embedding_glove_fine_tune.embedding.weight.shape == torch.Size([10, 100]))
+
+    def test_embedding_requires_grad(self):
+        self.assertFalse(embedding_w2v_freeze.embedding.weight.requires_grad)
+        self.assertTrue(embedding_w2v_fine_tune.embedding.weight.requires_grad)
+
+        self.assertFalse(embedding_glove_freeze.embedding.weight.requires_grad)
+        self.assertTrue(embedding_glove_fine_tune.embedding.weight.requires_grad)
+
+    def test_embedding_pad(self):
+        pad_embedding = embedding_w2v_freeze(torch.tensor([0]))
+        self.assertTrue(
+            torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
+        )
+
+        pad_embedding = embedding_w2v_fine_tune(torch.tensor([0]))
+        self.assertTrue(
+            torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
+        )
+
+        pad_embedding = embedding_glove_freeze(torch.tensor([0]))
+        self.assertTrue(
+            torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
+        )
+
+        pad_embedding = embedding_glove_fine_tune(torch.tensor([0]))
+        self.assertTrue(
+            torch.equal(pad_embedding, torch.zeros_like(pad_embedding))
+        )
+
+    def test_embedding_unk(self):
+        unk_embedding = embedding_w2v_freeze(torch.tensor([1]))
+        self.assertTrue(
+            torch.allclose(unk_embedding, embedding_w2v_freeze.embedding.weight[2:].mean(dim=0))
+        )
+
+        unk_embedding = embedding_w2v_fine_tune(torch.tensor([1]))
+        self.assertTrue(
+            torch.allclose(unk_embedding, embedding_w2v_fine_tune.embedding.weight[2:].mean(dim=0))
+        )
+
+        unk_embedding = embedding_glove_freeze(torch.tensor([1]))
+        self.assertTrue(
+            torch.allclose(unk_embedding, embedding_glove_freeze.embedding.weight[2:].mean(dim=0))
+        )
+
+        unk_embedding = embedding_glove_fine_tune(torch.tensor([1]))
+        self.assertTrue(
+            torch.allclose(unk_embedding, embedding_glove_fine_tune.embedding.weight[2:].mean(dim=0))
+        )
 
 
 if __name__ == '__main__':

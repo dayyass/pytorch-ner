@@ -10,6 +10,9 @@ def load_glove(
         add_pad: bool = True,
         add_unk: bool = True,
 ) -> Tuple[Dict[str, int], np.ndarray]:
+    """
+    Load glove embeddings.
+    """
 
     token2idx = {}
     token_embeddings = []
@@ -44,6 +47,9 @@ def load_word2vec(
         add_pad: bool = True,
         add_unk: bool = True,
 ) -> Tuple[Dict[str, int], np.ndarray]:
+    """
+    Load word2vec embeddings.
+    """
 
     token2idx = {}
 
@@ -68,49 +74,18 @@ def load_word2vec(
     return token2idx, token_embeddings
 
 
-# class EmbeddingWord2Vec(nn.Module):
-#     """
-#     Init embeddings from gensim word2vec KeyedVectors.
-#     """
-#
-#     def __init__(self, path: str, freeze: bool = True):
-#         super(EmbeddingWord2Vec, self).__init__()
-#         model = KeyedVectors.load_word2vec_format(path)
-#
-#         word_embeddings = model.vectors
-#         pad_embedding = np.zeros(shape=model.vector_size)
-#         unk_embedding = word_embeddings.mean(axis=0)  # TODO: make better unk embedding initialization
-#         embedding_matrix = np.vstack([pad_embedding, unk_embedding, word_embeddings])
-#
-#         self.embedding = nn.Embedding.from_pretrained(
-#             torch.tensor(embedding_matrix),
-#             freeze=freeze,
-#         )
-#
-#     def forward(self, x: torch.Tensor) -> torch.Tensor:
-#         return self.embedding(x)
-#
-#
-# class EmbeddingGloVe(nn.Module):
-#     """
-#     Init embeddings from glove.
-#     """
-#
-#     def __init__(self, path: str, freeze: bool = True):
-#         super(EmbeddingGloVe, self).__init__()
-#         model = KeyedVectors.load_word2vec_format(path)
-#
-#         word_embeddings = model.vectors
-#         pad_embedding = np.zeros(shape=model.vector_size)
-#         unk_embedding = word_embeddings.mean(axis=0)  # TODO: make better unk embedding initialization
-#         embedding_matrix = np.vstack([pad_embedding, unk_embedding, word_embeddings])
-#
-#         self.embedding = nn.Embedding.from_pretrained(
-#             torch.tensor(embedding_matrix),
-#             freeze=freeze,
-#         )
-#
-#     def forward(self, x: torch.Tensor) -> torch.Tensor:
-#         return self.embedding(x)
+class EmbeddingPreTrained(nn.Module):
+    """
+    Init embeddings layer from word2vec/glove.
+    """
 
-# TODO: test add_pad, add_unk
+    def __init__(self, embedding_matrix: np.ndarray, freeze: bool = True):
+        super(EmbeddingPreTrained, self).__init__()
+
+        self.embedding = nn.Embedding.from_pretrained(
+            torch.tensor(embedding_matrix),
+            freeze=freeze,
+        )
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.embedding(x)
