@@ -139,3 +139,23 @@ class Embedding(nn.Module):
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         return self.embedding(x)
+
+
+class EmbeddingWithDropout(nn.Module):
+    """
+    Embedding layer with dropout (SpatialDropout1d, WordEmbeddingsDropout, etc.)
+    """
+
+    def __init__(
+            self,
+            embedding_layer: nn.Module,
+            dropout: nn.Module,
+    ):
+        super(EmbeddingWithDropout, self).__init__()
+        self.embedding = embedding_layer
+        self.dropout = dropout
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        embed = self.embedding(x)
+        embed_dropout = self.dropout(embed)
+        return embed_dropout

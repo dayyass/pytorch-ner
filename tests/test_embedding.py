@@ -1,8 +1,11 @@
 import unittest
 import numpy as np
 import torch
-from pytorch_ner.nn_modules.embedding import load_word2vec, load_glove, fasttext2word2vec, EmbeddingPreTrained
 from pytorch_ner.prepare_data import prepare_conll_data_format
+from pytorch_ner.nn_modules.dropout import SpatialDropout1d
+from pytorch_ner.nn_modules.embedding import (
+    load_word2vec, load_glove, fasttext2word2vec, Embedding, EmbeddingPreTrained, EmbeddingWithDropout,
+)
 
 
 token_seq, _ = prepare_conll_data_format(path='tests/data/conll.txt')
@@ -21,6 +24,16 @@ embedding_glove_fine_tune = EmbeddingPreTrained(glove_embeddings, freeze=False)
 
 embedding_fasttext_freeze = EmbeddingPreTrained(fasttext_embeddings)
 embedding_fasttext_fine_tune = EmbeddingPreTrained(fasttext_embeddings, freeze=False)
+
+
+random_embedding_with_spatial_dropout = EmbeddingWithDropout(
+    embedding_layer=Embedding(num_embeddings=2000, embedding_dim=128),
+    dropout=SpatialDropout1d(p=0.5),
+)
+
+emb = random_embedding_with_spatial_dropout(
+    torch.randint(low=0, high=2000, size=(10, 20)),
+)
 
 
 class TestLoadEmbedding(unittest.TestCase):
@@ -246,6 +259,17 @@ class TestEmbeddingPreTrained(unittest.TestCase):
         self.assertTrue(
             torch.allclose(unk_embedding, embedding_glove_fine_tune.embedding.weight[2:].mean(dim=0))
         )
+
+
+class TestEmbeddingWithDropout(unittest.TestCase):
+
+    def test_embedding_shape(self):
+        self.assertTrue(emb.shape == torch.Size([10, 20, 128]))
+
+    def test_spatial_dropout(self):
+        if 0 in emb:
+            emb_dim_sum = emb.sum(dim=0).sum(dim=0)
+            self.assertTrue(0 in emb_dim_sum)
 
 
 if __name__ == '__main__':
