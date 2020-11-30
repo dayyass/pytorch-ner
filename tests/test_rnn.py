@@ -5,7 +5,7 @@ from pytorch_ner.nn_modules.rnn import DynamicRNN
 
 
 embeddings = torch.randn(10, 20, 128)  # [batch_size, seq_len, emb_dim]
-length = torch.arange(start=20, end=10, step=-1)
+lengths = torch.arange(start=20, end=10, step=-1)
 
 
 rnn = DynamicRNN(
@@ -40,17 +40,17 @@ class TestRNN(unittest.TestCase):
 
     def test_rnn_shape(self):
         self.assertTrue(
-            rnn(embeddings, length).size() == torch.Size([10, 20, 256]),
+            rnn(embeddings, lengths).size() == torch.Size([10, 20, 256]),
         )
 
     def test_gru_shape(self):
         self.assertTrue(
-            gru(embeddings, length).size() == torch.Size([10, 20, 128]),
+            gru(embeddings, lengths).size() == torch.Size([10, 20, 128]),
         )
 
     def test_lstm_shape(self):
         self.assertTrue(
-            lstm(embeddings, length).size() == torch.Size([10, 20, 256]),
+            lstm(embeddings, lengths).size() == torch.Size([10, 20, 256]),
         )
 
 
