@@ -65,6 +65,8 @@ criterion = nn.CrossEntropyLoss(reduction='none')
 optimizer = optim.Adam(model.parameters())
 
 
+# TRAIN MODEL
+
 train(
     model=model,
     trainloader=dataloader,

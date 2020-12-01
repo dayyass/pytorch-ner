@@ -7,6 +7,7 @@ def prepare_conll_data_format(
     path: str,
     sep: str = '\t',
     lower: bool = True,
+    verbose: bool = True,
 ) -> Tuple[List[List[str]], List[List[str]]]:
     """
     Prepare data in CoNNL like format.
@@ -19,7 +20,9 @@ def prepare_conll_data_format(
     with open(path, mode='r') as fp:
         tokens = []
         labels = []
-        for line in tqdm(fp):
+        if verbose:
+            fp = tqdm(fp)
+        for line in fp:
             if line != '\n':
                 token, label = line.strip().split(sep)
                 if lower:
