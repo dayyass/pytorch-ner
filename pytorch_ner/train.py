@@ -1,7 +1,17 @@
+from tqdm import tqdm
+from collections import defaultdict
+from typing import List, Callable, Optional, DefaultDict
+
 import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader
+
+from pytorch_ner.utils import to_numpy
+from pytorch_ner.metrics import calculate_metrics
 
 
-def masking(lengths: torch.Tensor) -> torch.BoolTensor:
+def masking(lengths: torch.Tensor) -> torch.Tensor:
     """
     Convert lengths tensor to binary mask
     implement: https://stackoverflow.com/questions/53403306/how-to-batch-convert-sentence-lengths-to-masks-in-pytorch
@@ -10,3 +20,92 @@ def masking(lengths: torch.Tensor) -> torch.BoolTensor:
     lengths_shape = lengths.shape[0]
     max_len = lengths.max()
     return torch.arange(end=max_len).expand(size=(lengths_shape, max_len)) < lengths.unsqueeze(1)
+
+
+def train_loop(
+        model: nn.Module,
+        dataloader: DataLoader,
+        criterion: Callable,
+        optimizer: optim.Optimizer,
+        device: torch.device,
+        verbose: bool = True,
+) -> DefaultDict[str, List[float]]:
+    """
+    Training loop on one epoch.
+    """
+
+    metrics = defaultdict(list)
+    idx2label = {v: k for k, v in dataloader.dataset.label2idx.items()}
+
+    if verbose:
+        dataloader = tqdm(dataloader)
+
+    model.train()
+
+    for tokens, labels, lengths in dataloader:
+        tokens, labels, lengths = tokens.to(device), labels.to(device), lengths.to(device)
+
+        mask = masking(lengths)
+
+        # forward pass
+        logits = model(tokens, lengths)
+        loss_without_reduction = criterion(logits.transpose(-1, -2), labels)
+        loss = torch.sum(loss_without_reduction * mask) / torch.sum(mask)
+
+        # backward pass
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+
+        # make predictions
+        y_true = to_numpy(labels[mask])
+        y_pred = to_numpy(logits.argmax(dim=-1)[mask])
+
+        # calculate metrics
+        metrics = calculate_metrics(
+            metrics=metrics, loss=loss.item(), y_true=y_true, y_pred=y_pred, idx2label=idx2label,
+        )
+
+    return metrics
+
+
+def validate_loop(
+        model: nn.Module,
+        dataloader: DataLoader,
+        criterion: Callable,
+        device: torch.device,
+        verbose: bool = True,
+) -> DefaultDict[str, List[float]]:
+    """
+    Validate loop on one epoch.
+    """
+
+    metrics = defaultdict(list)
+    idx2label = {v: k for k, v in dataloader.dataset.label2idx.items()}
+
+    if verbose:
+        dataloader = tqdm(dataloader)
+
+    model.eval()
+
+    for tokens, labels, lengths in dataloader:
+        tokens, labels, lengths = tokens.to(device), labels.to(device), lengths.to(device)
+
+        mask = masking(lengths)
+
+        # forward pass
+        with torch.no_grad():
+            logits = model(tokens, lengths)
+            loss_without_reduction = criterion(logits.transpose(-1, -2), labels)
+            loss = torch.sum(loss_without_reduction * mask) / torch.sum(mask)
+
+        # make predictions
+        y_true = to_numpy(labels[mask])
+        y_pred = to_numpy(logits.argmax(dim=-1)[mask])
+
+        # calculate metrics
+        metrics = calculate_metrics(
+            metrics=metrics, loss=loss.item(), y_true=y_true, y_pred=y_pred, idx2label=idx2label,
+        )
+
+    return metrics
