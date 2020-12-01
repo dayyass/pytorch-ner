@@ -1,3 +1,4 @@
+import numpy as np
 from tqdm import tqdm
 from collections import defaultdict
 from typing import List, Callable, Optional, DefaultDict
@@ -109,3 +110,66 @@ def validate_loop(
         )
 
     return metrics
+
+
+# TODO: add metrics as callback
+# TODO: add TensorBoard support
+# TODO: add EarlyStopping support
+# TODO: add ModelCheckpoint support
+def train(
+        model: nn.Module,
+        trainloader: DataLoader,
+        valloader: DataLoader,
+        criterion: Callable,
+        optimizer: optim.Optimizer,
+        device: torch.device,
+        n_epoch: int,
+        testloader: Optional[DataLoader] = None,
+        verbose: bool = True,
+):
+    for epoch in range(n_epoch):
+
+        if verbose:
+            print(f'epoch [{epoch+1}/{n_epoch}]\n')
+
+        train_metrics = train_loop(
+            model=model,
+            dataloader=trainloader,
+            criterion=criterion,
+            optimizer=optimizer,
+            device=device,
+            verbose=verbose,
+        )
+
+        if verbose:
+            for metric_name, metric_list in train_metrics.items():
+                print(f'train {metric_name}: {np.mean(metric_list)}')
+            print()
+
+        val_metrics = validate_loop(
+            model=model,
+            dataloader=valloader,
+            criterion=criterion,
+            device=device,
+            verbose=verbose,
+        )
+
+        if verbose:
+            for metric_name, metric_list in val_metrics.items():
+                print(f'val {metric_name}: {np.mean(metric_list)}')
+            print()
+
+    if testloader is not None:
+
+        test_metrics = validate_loop(
+            model=model,
+            dataloader=testloader,
+            criterion=criterion,
+            device=device,
+            verbose=verbose,
+        )
+
+        if verbose:
+            for metric_name, metric_list in test_metrics.items():
+                print(f'test {metric_name}: {np.mean(metric_list)}')
+            print()
