@@ -7,7 +7,7 @@ from pytorch_ner.nn_modules.embedding import Embedding, EmbeddingWithDropout
 from pytorch_ner.nn_modules.rnn import DynamicRNN
 from pytorch_ner.nn_modules.attention import MultiheadSelfAttention, AttentionWithSkipConnectionLayerNorm
 from pytorch_ner.nn_modules.linear import LinearHead
-from pytorch_ner.nn_modules.architecture import BiLSTM
+from pytorch_ner.nn_modules.architecture import BiLSTM, BiLSTMAttn
 
 
 tokens = torch.randint(low=0, high=2000, size=(10, 20))
@@ -26,7 +26,16 @@ attention_layer = AttentionWithSkipConnectionLayerNorm(
 )
 linear_head = LinearHead(linear_head=nn.Linear(in_features=512, out_features=5))
 
-model = BiLSTM(
+
+# MODELS
+
+model_bilstm = BiLSTM(
+    embedding_layer=embedding_layer,
+    rnn_layer=rnn_layer,
+    linear_head=linear_head,
+)
+
+model_bilstm_attn = BiLSTMAttn(
     embedding_layer=embedding_layer,
     rnn_layer=rnn_layer,
     attention_layer=attention_layer,
@@ -34,10 +43,13 @@ model = BiLSTM(
 )
 
 
-class TestBiLSTM(unittest.TestCase):
+class TestArchitecture(unittest.TestCase):
 
-    def test_inference_shape(self):
-        self.assertTrue(model(tokens, lengths).shape == torch.Size([10, 20, 5]))
+    def test_bilstm_inference_shape(self):
+        self.assertTrue(model_bilstm(tokens, lengths).shape == torch.Size([10, 20, 5]))
+
+    def test_bilstm_attn_inference_shape(self):
+        self.assertTrue(model_bilstm_attn(tokens, lengths).shape == torch.Size([10, 20, 5]))
 
 
 if __name__ == '__main__':
