@@ -25,7 +25,7 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # LOAD DATA
 
-token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt')
+token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt', verbose=False)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
@@ -42,7 +42,7 @@ dataloader = DataLoader(dataset, batch_size=2, shuffle=True, collate_fn=collator
 
 embedding_layer = EmbeddingWithDropout(
     embedding_layer=Embedding(num_embeddings=2000, embedding_dim=128),
-    dropout=SpatialDropout1d(p=0.5)
+    dropout=SpatialDropout1d(p=0.)
 )
 rnn_layer = DynamicRNN(rnn_unit=nn.LSTM, input_size=128, hidden_size=256, num_layers=1, dropout=0., bidirectional=True)
 attention_layer = AttentionWithSkipConnectionLayerNorm(
@@ -75,7 +75,7 @@ train(
     criterion=criterion,
     optimizer=optimizer,
     device=device,
-    n_epoch=5,
+    n_epoch=10,
     verbose=False,
 )
 
