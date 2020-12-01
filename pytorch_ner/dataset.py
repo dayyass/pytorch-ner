@@ -5,7 +5,7 @@ import torch
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
 
-from .utils import process_tokens, process_labels
+from .prepare_data import process_tokens, process_labels
 
 
 class NERDataset(Dataset):
