@@ -56,6 +56,10 @@ optimizer:
   weight_decay: 0
   amsgrad: false
 
-training:
+train:
   n_epoch: 10
   verbose: true
+
+save:
+  path_to_folder: 'models/test_main/'
+  export_onnx: true

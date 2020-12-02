@@ -8,6 +8,7 @@ from collections import Counter
 from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 from pytorch_ner.dataset import NERDataset, NERCollator
 from pytorch_ner.train import train
+from pytorch_ner.save import save_model
 
 from pytorch_ner.nn_modules.embedding import Embedding
 from pytorch_ner.nn_modules.rnn import DynamicRNN
@@ -188,6 +189,15 @@ train(
     criterion=criterion,
     optimizer=optimizer,
     device=device,
-    n_epoch=config['training']['n_epoch'],
-    verbose=config['training']['verbose'],
+    n_epoch=config['train']['n_epoch'],
+    verbose=config['train']['verbose'],
+)
+
+save_model(
+    path_to_folder=config['save']['path_to_folder'],
+    model=model,
+    token2idx=token2idx,
+    label2idx=label2idx,
+    config=config,
+    export_onnx=config['save']['export_onnx'],
 )
