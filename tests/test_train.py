@@ -41,7 +41,7 @@ dataloader = DataLoader(dataset, batch_size=2, shuffle=True, collate_fn=collator
 # INIT MODEL
 
 embedding_layer = EmbeddingWithDropout(
-    embedding_layer=Embedding(num_embeddings=2000, embedding_dim=128),
+    embedding_layer=Embedding(num_embeddings=len(token2idx), embedding_dim=128),
     dropout=SpatialDropout1d(p=0.)
 )
 rnn_layer = DynamicRNN(rnn_unit=nn.LSTM, input_size=128, hidden_size=256, num_layers=1, dropout=0., bidirectional=True)

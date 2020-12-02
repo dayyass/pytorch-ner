@@ -23,6 +23,7 @@ def masking(lengths: torch.Tensor) -> torch.Tensor:
     return torch.arange(end=max_len).expand(size=(lengths_shape, max_len)) < lengths.unsqueeze(1)
 
 
+# TODO: clip_grad_norm
 def train_loop(
         model: nn.Module,
         dataloader: DataLoader,
