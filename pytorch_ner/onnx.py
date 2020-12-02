@@ -10,8 +10,8 @@ from pytorch_ner.utils import to_numpy
 
 
 def onnx_export(
-        path_to_save: str,
         model: nn.Module,
+        path_to_save: str,
 ):
 
     model.eval()
@@ -26,7 +26,7 @@ def onnx_export(
             args=(tokens, lengths),
             f=path_to_save,
             export_params=True,
-            opset_version=10,  # hardcoded
+            opset_version=12,  # hardcoded
             do_constant_folding=True,  # hardcoded
             input_names=['tokens', 'lengths'],
             output_names=['output'],
