@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 
+# TODO: parametrized linear with number of layers and features
 class LinearHead(nn.Module):
     """
     Linear layer wrapper.
