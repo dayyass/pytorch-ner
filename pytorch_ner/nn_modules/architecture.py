@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 
 
+# TODO: maybe use embedding_layer out of model architecture (another class)
 class BiLSTM(nn.Module):
     """
     Bidirectional LSTM architecture.
