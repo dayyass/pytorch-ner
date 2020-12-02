@@ -1,6 +1,7 @@
 torch:
   device: 'cpu'
 
+# TODO: fix '\t' sep
 prepare_data:
   train_data:
     path: 'tests/data/conll.txt'
