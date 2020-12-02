@@ -1,6 +1,5 @@
 import os
 import torch
-import unittest
 from warnings import filterwarnings
 
 from tests.test_architecture import model_bilstm as model
@@ -23,19 +22,6 @@ lengths_dynamic = torch.tensor(10 * [20], dtype=torch.long)
 
 
 onnx_export(model=model, path_to_save=path_to_save)
-
-
-class TestONNX(unittest.TestCase):
-
-    def test_onnx_check_model(self):
-        onnx_check_model(path_to_load=path_to_save)
-
-    def test_onnx_check_inference(self):
-        onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens, lengths=lengths)
-
-    def test_onnx_check_dynamic_inference(self):
-        onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens_dynamic, lengths=lengths_dynamic)
-
-
-if __name__ == '__main__':
-    unittest.main()
+onnx_check_model(path_to_load=path_to_save)
+onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens, lengths=lengths)
+onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens_dynamic, lengths=lengths_dynamic)
