@@ -1,10 +1,14 @@
 import yaml
 import torch
+import torch.nn as nn
 from torch.utils.data import DataLoader
 from collections import Counter
 
 from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 from pytorch_ner.dataset import NERDataset, NERCollator
+
+from pytorch_ner.nn_modules.embedding import Embedding
+from pytorch_ner.nn_modules.rnn import DynamicRNN
 
 
 with open('config.yaml', 'r') as fp:
@@ -123,3 +127,22 @@ testloader = DataLoader(
 # print(len(trainloader))
 # print(len(valloader))
 # print(len(testloader))
+
+# TODO: add more params to config.yaml
+embedding_layer = Embedding(
+    num_embeddings=len(token2idx),
+    embedding_dim=config['model']['embedding']['embedding_dim'],
+)
+
+# print(embedding_layer)
+
+rnn_layer = DynamicRNN(
+    rnn_unit=eval(config['model']['rnn']['rnn_unit']),  # TODO: fix eval
+    input_size=config['model']['embedding']['embedding_dim'],  # reference to embedding_dim
+    hidden_size=config['model']['rnn']['hidden_size'],
+    num_layers=config['model']['rnn']['num_layers'],
+    dropout=config['model']['rnn']['dropout'],
+    bidirectional=config['model']['rnn']['bidirectional'],
+)
+
+# print(rnn_layer)

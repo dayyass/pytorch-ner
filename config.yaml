@@ -28,3 +28,15 @@ dataloader:
   label_padding: 'O'
   percentile: 100
   batch_size: 64
+
+model:
+  # TODO: add pretrained embeddings
+  # TODO: add dropout
+  embedding:
+    embedding_dim: 128
+  rnn:
+    rnn_unit: nn.LSTM
+    hidden_size: 256
+    num_layers: 1
+    dropout: 0.0
+    bidirectional: true
