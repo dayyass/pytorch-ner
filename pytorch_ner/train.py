@@ -128,6 +128,10 @@ def train(
         testloader: Optional[DataLoader] = None,
         verbose: bool = True,
 ):
+    """
+    Training / validation loop for n_epoch with final testing.
+    """
+
     for epoch in range(n_epoch):
 
         if verbose:
