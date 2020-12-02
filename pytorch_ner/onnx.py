@@ -9,15 +9,18 @@ import onnxruntime
 from pytorch_ner.utils import to_numpy
 
 
-def onnx_export(
+def _onnx_export(
         model: nn.Module,
         path_to_save: str,
 ):
+    """
+    Export PyTorch model to ONNX.
+    """
 
     model.eval()
 
     # hardcoded [batch_size, seq_len] = [1, 1] export
-    tokens = torch.randint(low=0, high=2000, size=(1, 1))
+    tokens = torch.tensor([[0]], dtype=torch.long)
     lengths = torch.tensor([1], dtype=torch.long)
 
     with torch.no_grad():
@@ -38,7 +41,7 @@ def onnx_export(
         )
 
 
-def onnx_check_model(path_to_load: str):
+def _onnx_check_model(path_to_load: str):
     """
     Check that the IR is well formed.
     """
@@ -47,7 +50,7 @@ def onnx_check_model(path_to_load: str):
     onnx.checker.check_model(onnx_model)
 
 
-def onnx_check_inference(model: nn.Module, path_to_load: str, tokens: torch.Tensor, lengths: torch.Tensor):
+def _onnx_check_inference(model: nn.Module, path_to_load: str, tokens: torch.Tensor, lengths: torch.Tensor):
     """
     Compute ONNX Runtime output prediction and compare with PyTorch results.
     """
@@ -63,3 +66,19 @@ def onnx_check_inference(model: nn.Module, path_to_load: str, tokens: torch.Tens
 
     # compare
     np.testing.assert_allclose(to_numpy(torch_out), ort_outs[0], rtol=1e-03, atol=1e-05)
+
+
+def onnx_export_and_check(
+        model: nn.Module,
+        path_to_save: str,
+):
+    tokens = torch.tensor([[0]], dtype=torch.long)
+    lengths = torch.tensor([1], dtype=torch.long)
+
+    tokens_dynamic = torch.tensor([[0, 1, 2], [3, 4, 5]], dtype=torch.long)
+    lengths_dynamic = torch.tensor([3, 2], dtype=torch.long)
+
+    _onnx_export(model=model, path_to_save=path_to_save)
+    _onnx_check_model(path_to_load=path_to_save)
+    _onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens, lengths=lengths)
+    _onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens_dynamic, lengths=lengths_dynamic)
