@@ -50,7 +50,7 @@ attention_layer = AttentionWithSkipConnectionLayerNorm(
     layer_norm=LayerNorm(normalized_shape=512),
     use_skip_connection=True,
 )
-linear_head = LinearHead(linear_head=nn.Linear(in_features=512, out_features=2))
+linear_head = LinearHead(linear_head=nn.Linear(in_features=512, out_features=len(label2idx)))
 
 model = BiLSTM(
     embedding_layer=embedding_layer,
