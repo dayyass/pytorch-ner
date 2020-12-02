@@ -2,7 +2,7 @@ import os
 import torch
 from warnings import filterwarnings
 
-from tests.test_architecture import model_bilstm as model
+from tests.test_nn_modules.test_architecture import model_bilstm as model
 from pytorch_ner.onnx import onnx_export, onnx_check_model, onnx_check_inference
 
 filterwarnings(action='ignore', category=UserWarning)

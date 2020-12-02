@@ -7,7 +7,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
-from tests.test_architecture import model_bilstm as model
+from tests.test_nn_modules.test_architecture import model_bilstm as model
 
 from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
 from pytorch_ner.dataset import NERDataset, NERCollator
