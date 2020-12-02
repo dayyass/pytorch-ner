@@ -21,6 +21,11 @@ with open('config.yaml', 'r') as fp:
 
 device = torch.device(config['torch']['device'])
 
+
+# LOAD DATA
+
+# tokens / labels sequences
+
 train_token_seq, train_label_seq = prepare_conll_data_format(
     path=config['prepare_data']['train_data']['path'],
     sep=config['prepare_data']['train_data']['sep'],
@@ -42,9 +47,7 @@ test_token_seq, test_label_seq = prepare_conll_data_format(
     verbose=config['prepare_data']['test_data']['verbose'],
 )
 
-# print(train_token_seq)
-# print(val_token_seq)
-# print(test_token_seq)
+# token2idx / label2idx
 
 token2cnt = Counter([token for sentence in train_token_seq for token in sentence])
 label_set = sorted(set(label for sentence in train_label_seq for label in sentence))
@@ -58,8 +61,7 @@ token2idx = get_token2idx(
 
 label2idx = get_label2idx(label_set=label_set)
 
-# print(token2idx)
-# print(label2idx)
+# datasets
 
 trainset = NERDataset(
     token_seq=train_token_seq,
@@ -85,9 +87,7 @@ testset = NERDataset(
     preprocess=config['dataloader']['preprocess'],
 )
 
-# print(trainset)
-# print(valset)
-# print(testset)
+# collators
 
 train_collator = NERCollator(
     token_padding_value=token2idx[config['dataloader']['token_padding']],
@@ -106,6 +106,8 @@ test_collator = NERCollator(
     label_padding_value=label2idx[config['dataloader']['label_padding']],
     percentile=100,  # hardcoded
 )
+
+# dataloaders
 
 # TODO: add more params to config.yaml
 trainloader = DataLoader(
@@ -129,17 +131,14 @@ testloader = DataLoader(
     collate_fn=test_collator,
 )
 
-# print(len(trainloader))
-# print(len(valloader))
-# print(len(testloader))
+
+# INIT MODEL
 
 # TODO: add more params to config.yaml
 embedding_layer = Embedding(
     num_embeddings=len(token2idx),
     embedding_dim=config['model']['embedding']['embedding_dim'],
 )
-
-# print(embedding_layer)
 
 rnn_layer = DynamicRNN(
     rnn_unit=eval(config['model']['rnn']['rnn_unit']),  # TODO: fix eval
@@ -150,13 +149,9 @@ rnn_layer = DynamicRNN(
     bidirectional=config['model']['rnn']['bidirectional'],
 )
 
-# print(rnn_layer)
-
-in_features = (2 if config['model']['rnn']['bidirectional'] else 1) * config['model']['rnn']['hidden_size']
-
 linear_head = LinearHead(
     linear_head=nn.Linear(
-        in_features=in_features,
+        in_features=(2 if config['model']['rnn']['bidirectional'] else 1) * config['model']['rnn']['hidden_size'],
         out_features=len(label2idx),
     ),
 )
@@ -166,6 +161,9 @@ model = BiLSTM(
     rnn_layer=rnn_layer,
     linear_head=linear_head,
 ).to(device)
+
+
+# CRITERION AND OPTIMIZER
 
 criterion = nn.CrossEntropyLoss(reduction='none')  # hardcoded
 
@@ -177,9 +175,8 @@ optimizer = optim.Adam(
     amsgrad=config['optimizer']['amsgrad'],
 )
 
-# print(criterion)
-# print(optimizer)
 
+# TRAIN MODEL
 
 train(
     model=model,
@@ -192,6 +189,9 @@ train(
     n_epoch=config['train']['n_epoch'],
     verbose=config['train']['verbose'],
 )
+
+
+# SAVE MODEL
 
 save_model(
     path_to_folder=config['save']['path_to_folder'],
