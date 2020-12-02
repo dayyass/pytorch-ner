@@ -14,9 +14,9 @@ class SpatialDropout1d(nn.Module):
         self.spatial_dropout = nn.Dropout2d(p=p)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = x.T.unsqueeze(0)  # convert to [fake_dim, emb_dim, seq_len, batch_size]
+        x = x.permute(2, 1, 0).unsqueeze(0)  # convert to [fake_dim, emb_dim, seq_len, batch_size]
         x = self.spatial_dropout(x)
-        x = x.squeeze(0).T  # back to [batch_size, seq_len, emb_dim]
+        x = x.squeeze(0).permute(2, 1, 0)  # back to [batch_size, seq_len, emb_dim]
         return x
 
 
