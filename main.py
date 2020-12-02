@@ -1,6 +1,7 @@
 import yaml
 import torch
 import torch.nn as nn
+import torch.optim as optim
 from torch.utils.data import DataLoader
 from collections import Counter
 
@@ -9,6 +10,8 @@ from pytorch_ner.dataset import NERDataset, NERCollator
 
 from pytorch_ner.nn_modules.embedding import Embedding
 from pytorch_ner.nn_modules.rnn import DynamicRNN
+from pytorch_ner.nn_modules.linear import LinearHead
+from pytorch_ner.nn_modules.architecture import BiLSTM
 
 
 with open('config.yaml', 'r') as fp:
@@ -146,3 +149,31 @@ rnn_layer = DynamicRNN(
 )
 
 # print(rnn_layer)
+
+in_features = (2 if config['model']['rnn']['bidirectional'] else 1) * config['model']['rnn']['hidden_size']
+
+linear_head = LinearHead(
+    linear_head=nn.Linear(
+        in_features=in_features,
+        out_features=len(label2idx),
+    ),
+)
+
+model = BiLSTM(
+    embedding_layer=embedding_layer,
+    rnn_layer=rnn_layer,
+    linear_head=linear_head,
+).to(device)
+
+criterion = nn.CrossEntropyLoss(reduction='none')  # hardcoded
+
+optimizer = optim.Adam(
+    params=model.parameters(),
+    lr=config['optimizer']['lr'],
+    betas=(config['optimizer']['beta_0'], config['optimizer']['beta_1']),
+    weight_decay=config['optimizer']['weight_decay'],
+    amsgrad=config['optimizer']['amsgrad'],
+)
+
+# print(criterion)
+# print(optimizer)

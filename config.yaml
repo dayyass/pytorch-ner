@@ -30,6 +30,8 @@ dataloader:
   batch_size: 64
 
 model:
+  # TODO: add model architecture
+  model:
   # TODO: add pretrained embeddings
   # TODO: add dropout
   embedding:
@@ -38,5 +40,17 @@ model:
     rnn_unit: nn.LSTM
     hidden_size: 256
     num_layers: 1
-    dropout: 0.0
+    dropout: 0
     bidirectional: true
+  # TODO: add attention if needed
+  attention:
+  # TODO: add linear num layers
+  linear:
+
+# TODO: add optimizer type (hardcoded Adam)
+optimizer:
+  lr: 0.001
+  beta_0: 0.9
+  beta_1: 0.999
+  weight_decay: 0
+  amsgrad: false
