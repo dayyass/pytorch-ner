@@ -54,3 +54,7 @@ optimizer:
   beta_1: 0.999
   weight_decay: 0
   amsgrad: false
+
+training:
+  n_epoch: 10
+  verbose: true
