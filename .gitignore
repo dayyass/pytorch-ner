@@ -2,6 +2,7 @@
 *__pycache__/
 *.pyc
 /venv/
+/models/
 .idea
 # TODO: fix it
 /tests/data/fasttext.model.trainables.vectors_ngrams_lockf.npy
