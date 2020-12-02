@@ -4,7 +4,7 @@ import yaml
 import torch
 import torch.nn as nn
 from typing import Dict
-from pytorch_ner.utils import mkdir
+from pytorch_ner.utils import mkdir, rmdir
 from pytorch_ner.onnx import onnx_export_and_check
 
 
@@ -16,7 +16,8 @@ def save_model(
         config: Dict,
         export_onnx: bool = False,
 ):
-    # make dir if not exists
+    # make empty dir
+    rmdir(path_to_folder)
     mkdir(path_to_folder)
 
     model.eval()
