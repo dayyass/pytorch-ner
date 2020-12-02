@@ -1,0 +1,30 @@
+torch:
+  device: 'cpu'
+
+prepare_data:
+  train_data:
+    path: 'tests/data/conll.txt'
+    sep:
+    lower: true
+    verbose: true
+  val_data:
+    path: 'tests/data/conll.txt'
+    sep:
+    lower: true
+    verbose: true
+  test_data:
+    path: 'tests/data/conll.txt'
+    sep:
+    lower: true
+    verbose: true
+  token2idx:
+    min_count: 1
+    add_pad: true
+    add_unk: true
+
+dataloader:
+  preprocess: true
+  token_padding: '<PAD>'
+  label_padding: 'O'
+  percentile: 100
+  batch_size: 64
