@@ -1,3 +1,4 @@
+import onnx
 import torch
 import random
 import numpy as np
@@ -21,3 +22,8 @@ def to_numpy(tensor: torch.Tensor) -> np.ndarray:
     """
 
     return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+
+
+def onnx_check_model(path_to_load: str):
+    onnx_model = onnx.load(path_to_load)
+    onnx.checker.check_model(onnx_model)
