@@ -1,4 +1,5 @@
 import numpy as np
+from warnings import filterwarnings
 
 import torch
 import torch.nn as nn
@@ -7,6 +8,8 @@ import onnx
 import onnxruntime
 
 from pytorch_ner.utils import to_numpy
+
+filterwarnings(action='ignore', category=UserWarning)
 
 
 def _onnx_export(
