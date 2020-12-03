@@ -20,10 +20,10 @@ def save_model(
     rmdir(path_to_folder)
     mkdir(path_to_folder)
 
+    model.cpu()
     model.eval()
 
     # save torch model
-    # TODO: check device correctnes
     torch.save(model.state_dict(), os.path.join(path_to_folder, 'model.pth'))
 
     # save token2idx

@@ -20,6 +20,7 @@ def _onnx_export(
     Export PyTorch model to ONNX.
     """
 
+    model.cpu()
     model.eval()
 
     # hardcoded [batch_size, seq_len] = [1, 1] export
