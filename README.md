@@ -10,7 +10,8 @@ python main.py --config config.yaml
 If *--config* argument is not specified, then used config.yaml.
 
 ### Data Format:
-Text file containing separated tokens and labels on each line. Sentences separated using empty line.
+Text file containing separated tokens and labels on each line. Sentences are separated by empty line.
+Labels should already be in necessary format, e.g. IO, BIO, BILUO, ...
 
 Example:
 ```
