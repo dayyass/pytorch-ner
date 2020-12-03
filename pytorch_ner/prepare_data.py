@@ -2,7 +2,6 @@ from typing import Tuple, List, Dict
 from tqdm import tqdm
 
 
-# TODO: check conll
 def prepare_conll_data_format(
     path: str,
     sep: str = '\t',
@@ -11,8 +10,19 @@ def prepare_conll_data_format(
 ) -> Tuple[List[List[str]], List[List[str]]]:
     """
     Prepare data in CoNNL like format.
+    Tokens and labels separated on each line.
     Sentences are separated by empty line.
-    Tokens and labels are tab-separated.
+    Labels should already be in necessary format, e.g. IO, BIO, BILUO, ...
+
+    Data example:
+    token_11    label_11
+    token_12    label_12
+
+    token_21    label_21
+    token_22    label_22
+    token_23    label_23
+
+    ...
     """
 
     token_seq = []
@@ -92,6 +102,3 @@ def process_labels(labels: List[str], label2idx: Dict[str, int]) -> List[int]:
 
     processed_labels = [label2idx[label] for label in labels]
     return processed_labels
-
-
-# TODO: add bio/biluo converters

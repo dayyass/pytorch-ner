@@ -33,7 +33,7 @@ def load_glove(
     token_embeddings = np.array(token_embeddings)
 
     if add_unk:
-        unk_embedding = token_embeddings.mean(axis=0)  # TODO: make better unk embedding initialization
+        unk_embedding = token_embeddings.mean(axis=0)
         token_embeddings = np.vstack([unk_embedding, token_embeddings])
     if add_pad:
         pad_embedding = np.zeros(shape=token_embeddings.shape[-1])
@@ -65,7 +65,7 @@ def load_word2vec(
     token_embeddings = model.vectors
 
     if add_unk:
-        unk_embedding = token_embeddings.mean(axis=0)  # TODO: make better unk embedding initialization
+        unk_embedding = token_embeddings.mean(axis=0)
         token_embeddings = np.vstack([unk_embedding, token_embeddings])
     if add_pad:
         pad_embedding = np.zeros(shape=token_embeddings.shape[-1])
