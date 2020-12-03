@@ -135,6 +135,8 @@ testloader = DataLoader(
 # INIT MODEL
 
 # TODO: add more params to config.yaml
+# TODO: add pretrained embeddings
+# TODO: add dropout
 embedding_layer = Embedding(
     num_embeddings=len(token2idx),
     embedding_dim=config['model']['embedding']['embedding_dim'],
@@ -149,6 +151,7 @@ rnn_layer = DynamicRNN(
     bidirectional=config['model']['rnn']['bidirectional'],
 )
 
+# TODO: add attention if needed in config
 linear_head = LinearHead(
     linear_head=nn.Linear(
         in_features=(2 if config['model']['rnn']['bidirectional'] else 1) * config['model']['rnn']['hidden_size'],
@@ -156,6 +159,8 @@ linear_head = LinearHead(
     ),
 )
 
+# TODO: add model architecture in config
+# TODO: add attention if needed
 model = BiLSTM(
     embedding_layer=embedding_layer,
     rnn_layer=rnn_layer,
@@ -167,6 +172,7 @@ model = BiLSTM(
 
 criterion = nn.CrossEntropyLoss(reduction='none')  # hardcoded
 
+# TODO: add optimizer type (hardcoded Adam)
 optimizer = optim.Adam(
     params=model.parameters(),
     lr=config['optimizer']['lr'],

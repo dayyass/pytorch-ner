@@ -1,21 +1,20 @@
 torch:
   device: 'cpu'
 
-# TODO: fix '\t' sep
 prepare_data:
   train_data:
     path: 'tests/data/conll.txt'
-    sep:
+    sep: '	'
     lower: true
     verbose: true
   val_data:
     path: 'tests/data/conll.txt'
-    sep:
+    sep: '	'
     lower: true
     verbose: true
   test_data:
     path: 'tests/data/conll.txt'
-    sep:
+    sep: '	'
     lower: true
     verbose: true
   token2idx:
@@ -31,10 +30,6 @@ dataloader:
   batch_size: 64
 
 model:
-  # TODO: add model architecture
-  model:
-  # TODO: add pretrained embeddings
-  # TODO: add dropout
   embedding:
     embedding_dim: 128
   rnn:
@@ -43,12 +38,7 @@ model:
     num_layers: 1
     dropout: 0
     bidirectional: true
-  # TODO: add attention if needed
-  attention:
-  # TODO: add linear num layers
-  linear:
 
-# TODO: add optimizer type (hardcoded Adam)
 optimizer:
   lr: 0.001
   beta_0: 0.9
