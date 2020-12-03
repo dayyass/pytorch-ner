@@ -64,7 +64,7 @@ class TestTrain(unittest.TestCase):
     def test_val_metrics(self):
 
         val_metrics = validate_loop(
-            model=model,
+            model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,
             device=device,

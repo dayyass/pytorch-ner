@@ -18,9 +18,10 @@ def masking(lengths: torch.Tensor) -> torch.Tensor:
     implement: https://stackoverflow.com/questions/53403306/how-to-batch-convert-sentence-lengths-to-masks-in-pytorch
     """
 
+    device = lengths.device
     lengths_shape = lengths.shape[0]
     max_len = lengths.max()
-    return torch.arange(end=max_len).expand(size=(lengths_shape, max_len)) < lengths.unsqueeze(1)
+    return torch.arange(end=max_len, device=device).expand(size=(lengths_shape, max_len)) < lengths.unsqueeze(1)
 
 
 # TODO: clip_grad_norm
