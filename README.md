@@ -13,7 +13,7 @@ If *--config* argument is not specified, then used config.yaml.
 To export trained model to ONNX use config.yaml:
 ```
 save:
-  onnx_export: True
+  export_onnx: True
 ```
 
 ### Data Format:
