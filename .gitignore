@@ -4,6 +4,3 @@
 /venv/
 /models/
 .idea
-# TODO: fix it
-/tests/data/fasttext.model.trainables.vectors_ngrams_lockf.npy
-/tests/data/fasttext.model.wv.vectors_ngrams.npy

@@ -53,14 +53,13 @@ train(
     criterion=criterion,
     optimizer=optimizer,
     device=device,
-    n_epoch=10,
+    n_epoch=5,
     verbose=False,
 )
 
 
 class TestTrain(unittest.TestCase):
 
-    # TODO: fix it - not always True
     def test_val_metrics(self):
 
         val_metrics = validate_loop(
@@ -72,7 +71,7 @@ class TestTrain(unittest.TestCase):
         )
 
         for metric_name, metric_list in val_metrics.items():
-            if metric_name.startswith('f1'):
+            if not metric_name.startswith('loss'):
                 self.assertTrue(np.mean(metric_list) == 1.0)
 
 
