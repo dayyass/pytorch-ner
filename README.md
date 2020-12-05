@@ -1,3 +1,5 @@
+# Named Entity Recognition (NER) with PyTorch
+
 ![test Status](https://github.com/dayyass/pytorch_ner/workflows/test/badge.svg)
 ![lint Status](https://github.com/dayyass/pytorch_ner/workflows/lint/badge.svg)
 ![License](https://img.shields.io/github/license/dayyass/pytorch_ner)
