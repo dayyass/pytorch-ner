@@ -73,6 +73,7 @@ class TestTrain(unittest.TestCase):
             model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,
+            optimizer=optimizer,
             device=device,
             verbose=False,
         )
