@@ -51,6 +51,17 @@ criterion = nn.CrossEntropyLoss(reduction="none")
 optimizer = optim.Adam(model.parameters())
 
 
+# VALIDATE
+
+metrics_before = validate_loop(
+    model=model.to(device),
+    dataloader=dataloader,
+    criterion=criterion,
+    device=device,
+    verbose=False,
+)
+
+
 # TRAIN MODEL
 
 train(
@@ -69,7 +80,7 @@ train(
 class TestTrain(unittest.TestCase):
     def test_val_metrics(self):
 
-        val_metrics = validate_loop(
+        metrics_after = validate_loop(
             model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,
@@ -77,9 +88,12 @@ class TestTrain(unittest.TestCase):
             verbose=False,
         )
 
-        for metric_name, metric_list in val_metrics.items():
+        for metric_name in metrics_after.keys():
             if not metric_name.startswith("loss"):
-                self.assertTrue(np.mean(metric_list) == 1.0)
+                self.assertLess(
+                    np.mean(metrics_before[metric_name]),
+                    np.mean(metrics_after[metric_name]),
+                )
 
 
 if __name__ == "__main__":
