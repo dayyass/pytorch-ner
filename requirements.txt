@@ -1,7 +1,9 @@
 appdirs==1.4.4
+black==20.8b1
 certifi==2020.11.8
 cfgv==3.2.0
 chardet==3.0.4
+click==7.1.2
 dataclasses==0.6
 distlib==0.3.1
 filelock==3.0.12
@@ -11,14 +13,17 @@ identify==1.5.10
 idna==2.10
 isort==5.6.4
 joblib==0.17.0
+mypy-extensions==0.4.3
 nodeenv==1.5.0
 numpy==1.19.4
 onnx==1.8.0
 onnxruntime==1.5.2
+pathspec==0.8.1
 pre-commit==2.9.2
 protobuf==3.14.0
 pytorch-crf==0.7.2
 PyYAML==5.3.1
+regex==2020.11.13
 requests==2.25.0
 scikit-learn==0.23.2
 scipy==1.5.4
@@ -29,6 +34,7 @@ threadpoolctl==2.1.0
 toml==0.10.2
 torch==1.7.0
 tqdm==4.53.0
+typed-ast==1.4.1
 typing-extensions==3.7.4.3
 urllib3==1.26.2
 virtualenv==20.2.1
