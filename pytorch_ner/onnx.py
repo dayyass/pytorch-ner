@@ -1,20 +1,19 @@
-import numpy as np
 from warnings import filterwarnings
 
+import numpy as np
+import onnx
+import onnxruntime
 import torch
 import torch.nn as nn
 
-import onnx
-import onnxruntime
-
 from pytorch_ner.utils import to_numpy
 
-filterwarnings(action='ignore', category=UserWarning)
+filterwarnings(action="ignore", category=UserWarning)
 
 
 def _onnx_export(
-        model: nn.Module,
-        path_to_save: str,
+    model: nn.Module,
+    path_to_save: str,
 ):
     """
     Export PyTorch model to ONNX.
@@ -35,12 +34,12 @@ def _onnx_export(
             export_params=True,
             opset_version=12,  # hardcoded
             do_constant_folding=True,  # hardcoded
-            input_names=['tokens', 'lengths'],
-            output_names=['output'],
+            input_names=["tokens", "lengths"],
+            output_names=["output"],
             dynamic_axes={
-                'tokens': {0: 'batch_size', 1: 'seq_len'},
-                'lengths': {0: 'batch_size'},
-                'output': {0: 'batch_size', 1: 'seq_len'},
+                "tokens": {0: "batch_size", 1: "seq_len"},
+                "lengths": {0: "batch_size"},
+                "output": {0: "batch_size", 1: "seq_len"},
             },
         )
 
@@ -50,11 +49,13 @@ def _onnx_check_model(path_to_load: str):
     Check that the IR is well formed.
     """
 
-    onnx_model = onnx.load(path_to_load)
-    onnx.checker.check_model(onnx_model)
+    onnx_model = onnx.load(path_to_load)  # type: ignore
+    onnx.checker.check_model(onnx_model)  # type: ignore
 
 
-def _onnx_check_inference(model: nn.Module, path_to_load: str, tokens: torch.Tensor, lengths: torch.Tensor):
+def _onnx_check_inference(
+    model: nn.Module, path_to_load: str, tokens: torch.Tensor, lengths: torch.Tensor
+):
     """
     Compute ONNX Runtime output prediction and compare with PyTorch results.
     """
@@ -65,7 +66,7 @@ def _onnx_check_inference(model: nn.Module, path_to_load: str, tokens: torch.Ten
 
     # onnx inference
     ort_session = onnxruntime.InferenceSession(path_to_load)
-    ort_inputs = {'tokens': to_numpy(tokens), 'lengths': to_numpy(lengths)}
+    ort_inputs = {"tokens": to_numpy(tokens), "lengths": to_numpy(lengths)}
     ort_outs = ort_session.run(None, ort_inputs)
 
     # compare
@@ -73,8 +74,8 @@ def _onnx_check_inference(model: nn.Module, path_to_load: str, tokens: torch.Ten
 
 
 def onnx_export_and_check(
-        model: nn.Module,
-        path_to_save: str,
+    model: nn.Module,
+    path_to_save: str,
 ):
     tokens = torch.tensor([[0]], dtype=torch.long)
     lengths = torch.tensor([1], dtype=torch.long)
@@ -84,5 +85,12 @@ def onnx_export_and_check(
 
     _onnx_export(model=model, path_to_save=path_to_save)
     _onnx_check_model(path_to_load=path_to_save)
-    _onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens, lengths=lengths)
-    _onnx_check_inference(model=model, path_to_load=path_to_save, tokens=tokens_dynamic, lengths=lengths_dynamic)
+    _onnx_check_inference(
+        model=model, path_to_load=path_to_save, tokens=tokens, lengths=lengths
+    )
+    _onnx_check_inference(
+        model=model,
+        path_to_load=path_to_save,
+        tokens=tokens_dynamic,
+        lengths=lengths_dynamic,
+    )

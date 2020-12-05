@@ -1,16 +1,16 @@
 import os
-import yaml
 import unittest
 
+import yaml
+
 from pytorch_ner.save import save_model
-from tests.test_train import model, token2idx, label2idx
+from tests.test_train import label2idx, model, token2idx
+
+path_to_folder = "models/test_save/"
+path_to_onnx_folder = "models/test_onnx_save/"
 
 
-path_to_folder = 'models/test_save/'
-path_to_onnx_folder = 'models/test_onnx_save/'
-
-
-with open('config.yaml', 'r') as fp:
+with open("config.yaml", "r") as fp:
     config = yaml.safe_load(fp)
 
 
@@ -36,7 +36,6 @@ save_model(
 
 
 class TestSave(unittest.TestCase):
-
     def test_mkdir(self):
         self.assertTrue(os.path.exists(path_to_folder))
 
@@ -47,5 +46,5 @@ class TestSave(unittest.TestCase):
         self.assertTrue(len(os.listdir(path_to_onnx_folder)) == 5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

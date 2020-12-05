@@ -1,7 +1,8 @@
 import unittest
-import torch
-from pytorch_ner.nn_modules.dropout import SpatialDropout1d, WordEmbeddingsDropout
 
+import torch
+
+from pytorch_ner.nn_modules.dropout import SpatialDropout1d, WordEmbeddingsDropout
 
 embeddings = torch.randn(2, 50, 128)  # [batch_size, seq_len, emb_dim]
 
@@ -10,7 +11,6 @@ word_embeddings_dropout = WordEmbeddingsDropout(p=0.5)
 
 
 class TestDropout(unittest.TestCase):
-
     def test_spatial_dropout(self):
 
         emb = spatial_dropout(embeddings)
@@ -26,5 +26,5 @@ class TestDropout(unittest.TestCase):
             self.assertTrue(0 in emb_dim_sum)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

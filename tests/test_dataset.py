@@ -1,12 +1,17 @@
 import unittest
-import torch
-import numpy as np
 from collections import Counter
-from pytorch_ner.prepare_data import prepare_conll_data_format, get_token2idx, get_label2idx
-from pytorch_ner.dataset import NERDataset, NERCollator
 
+import numpy as np
+import torch
 
-token_seq, label_seq = prepare_conll_data_format('tests/data/conll.txt', verbose=False)
+from pytorch_ner.dataset import NERCollator, NERDataset
+from pytorch_ner.prepare_data import (
+    get_label2idx,
+    get_token2idx,
+    prepare_conll_data_format,
+)
+
+token_seq, label_seq = prepare_conll_data_format("tests/data/conll.txt", verbose=False)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
@@ -15,10 +20,17 @@ token2idx = get_token2idx(token2cnt)
 label2idx = get_label2idx(label_set)
 
 dataset_preprocessed = NERDataset(
-    token_seq=token_seq, label_seq=label_seq, token2idx=token2idx, label2idx=label2idx,
+    token_seq=token_seq,
+    label_seq=label_seq,
+    token2idx=token2idx,
+    label2idx=label2idx,
 )
 dataset = NERDataset(
-    token_seq=token_seq, label_seq=label_seq, token2idx=token2idx, label2idx=label2idx, preprocess=False,
+    token_seq=token_seq,
+    label_seq=label_seq,
+    token2idx=token2idx,
+    label2idx=label2idx,
+    preprocess=False,
 )
 
 ref_tokens_0 = np.array([2, 3, 4, 5, 6, 7])
@@ -40,7 +52,6 @@ batch = [
 
 
 class TestDataset(unittest.TestCase):
-
     def test_len(self):
         self.assertEqual(len(dataset_preprocessed), 2)
         self.assertEqual(len(dataset), 2)
@@ -71,11 +82,14 @@ class TestDataset(unittest.TestCase):
 
 
 class TestCollator(unittest.TestCase):
-
     def test_collator_1(self):
         tokens, labels, lengths = collator_1(batch)
-        self.assertTrue(torch.equal(tokens, torch.tensor([[1, 2, 3, 4, 5], [1, 2, 3, 0, 0]])))
-        self.assertTrue(torch.equal(labels, torch.tensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]])))
+        self.assertTrue(
+            torch.equal(tokens, torch.tensor([[1, 2, 3, 4, 5], [1, 2, 3, 0, 0]]))
+        )
+        self.assertTrue(
+            torch.equal(labels, torch.tensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]]))
+        )
         self.assertTrue(torch.equal(lengths, torch.tensor([5, 3])))
 
     def test_collator_2(self):
@@ -85,5 +99,5 @@ class TestCollator(unittest.TestCase):
         self.assertTrue(torch.equal(lengths, torch.tensor([4, 3])))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

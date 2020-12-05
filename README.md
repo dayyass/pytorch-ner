@@ -46,5 +46,3 @@ List of implemented models:
 <!--
 # TODO: add model results
 -->
-
-tmp
