@@ -1,6 +1,12 @@
+![Workflow Status](https://img.shields.io/github/workflow/status/dayyass/pytorch_ner/Python%20package)
+![License](https://img.shields.io/github/license/dayyass/pytorch_ner)
+![Release (latest by date)](https://img.shields.io/github/v/release/dayyass/pytorch_ner)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 ### About
 Pipeline for training NER models using PyTorch.<br/>
-ONNX export supported.
+ONNX export supported.<br/>
+Python 3.6+
 
 ### Usage
 The user interface consists of only one file *config.yaml*.<br/>
