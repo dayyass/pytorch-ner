@@ -13,7 +13,7 @@ from pytorch_ner.prepare_data import (
     get_token2idx,
     prepare_conll_data_format,
 )
-from pytorch_ner.train import train, train_loop
+from pytorch_ner.train import train, validate_loop
 from tests.test_nn_modules.test_architecture import model_bilstm as model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -51,6 +51,17 @@ criterion = nn.CrossEntropyLoss(reduction="none")
 optimizer = optim.Adam(model.parameters())
 
 
+# VALIDATE
+
+metrics_before = validate_loop(
+    model=model.to(device),
+    dataloader=dataloader,
+    criterion=criterion,
+    device=device,
+    verbose=False,
+)
+
+
 # TRAIN MODEL
 
 train(
@@ -69,18 +80,20 @@ train(
 class TestTrain(unittest.TestCase):
     def test_val_metrics(self):
 
-        metrics = train_loop(
+        metrics_after = validate_loop(
             model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,
-            optimizer=optimizer,
             device=device,
             verbose=False,
         )
 
-        for metric_name, metric_list in metrics.items():
+        for metric_name in metrics_after.keys():
             if not metric_name.startswith("loss"):
-                self.assertTrue(np.mean(metric_list) == 1.0)
+                self.assertLess(
+                    np.mean(metrics_before[metric_name]),
+                    np.mean(metrics_after[metric_name]),
+                )
 
 
 if __name__ == "__main__":
