@@ -1,8 +1,9 @@
 import os
-import torch
 import random
 import shutil
+
 import numpy as np
+import torch
 
 
 def set_global_seed(seed: int):
@@ -22,7 +23,9 @@ def to_numpy(tensor: torch.Tensor) -> np.ndarray:
     Convert torch.Tensor to np.ndarray.
     """
 
-    return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+    return (
+        tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+    )
 
 
 def mkdir(path: str):

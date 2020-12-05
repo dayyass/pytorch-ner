@@ -9,10 +9,10 @@ class BiLSTM(nn.Module):
     """
 
     def __init__(
-            self,
-            embedding_layer: nn.Module,
-            rnn_layer: nn.Module,
-            linear_head: nn.Module,
+        self,
+        embedding_layer: nn.Module,
+        rnn_layer: nn.Module,
+        linear_head: nn.Module,
     ):
         super(BiLSTM, self).__init__()
         self.embedding = embedding_layer  # EMBEDDINGS
@@ -32,11 +32,11 @@ class BiLSTMAttn(nn.Module):
     """
 
     def __init__(
-            self,
-            embedding_layer: nn.Module,
-            rnn_layer: nn.Module,
-            attention_layer: nn.Module,
-            linear_head: nn.Module,
+        self,
+        embedding_layer: nn.Module,
+        rnn_layer: nn.Module,
+        attention_layer: nn.Module,
+        linear_head: nn.Module,
     ):
         super(BiLSTMAttn, self).__init__()
         self.embedding = embedding_layer  # EMBEDDINGS

@@ -1,8 +1,12 @@
 import unittest
-import torch
-from pytorch_ner.nn_modules.normalization import LayerNorm
-from pytorch_ner.nn_modules.attention import MultiheadSelfAttention, AttentionWithSkipConnectionLayerNorm
 
+import torch
+
+from pytorch_ner.nn_modules.attention import (
+    AttentionWithSkipConnectionLayerNorm,
+    MultiheadSelfAttention,
+)
+from pytorch_ner.nn_modules.normalization import LayerNorm
 
 embeddings = torch.randn(10, 20, 128)  # [batch_size, seq_len, emb_dim]
 
@@ -28,22 +32,20 @@ attention_with_skip_connection_layer_norm = AttentionWithSkipConnectionLayerNorm
 
 
 class TestAttention(unittest.TestCase):
-
     def test_attention_shape(self):
-        self.assertTrue(
-            attention(embeddings).size() == embeddings.size(),
-        )
+        self.assertEqual(attention(embeddings).size(), embeddings.size())
 
     def test_attention_with_layer_norm_shape(self):
-        self.assertTrue(
-            attention_with_layer_norm(embeddings).size() == embeddings.size(),
+        self.assertEqual(
+            attention_with_layer_norm(embeddings).size(), embeddings.size()
         )
 
     def test_attention_with_skip_connection_layer_norm_shape(self):
-        self.assertTrue(
-            attention_with_skip_connection_layer_norm(embeddings).size() == embeddings.size(),
+        self.assertEqual(
+            attention_with_skip_connection_layer_norm(embeddings).size(),
+            embeddings.size(),
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

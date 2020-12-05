@@ -9,10 +9,10 @@ class MultiheadSelfAttention(nn.Module):
     """
 
     def __init__(
-            self,
-            embed_dim: int,
-            num_heads: int,
-            dropout: float,
+        self,
+        embed_dim: int,
+        num_heads: int,
+        dropout: float,
     ):
         super(MultiheadSelfAttention, self).__init__()
         self.attention = nn.MultiheadAttention(
@@ -35,10 +35,10 @@ class AttentionWithSkipConnectionLayerNorm(nn.Module):
     """
 
     def __init__(
-            self,
-            attention_layer: nn.Module,
-            layer_norm: nn.Module,
-            use_skip_connection: bool = True,
+        self,
+        attention_layer: nn.Module,
+        layer_norm: nn.Module,
+        use_skip_connection: bool = True,
     ):
         super(AttentionWithSkipConnectionLayerNorm, self).__init__()
         self.attention = attention_layer

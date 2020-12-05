@@ -1,8 +1,9 @@
 import unittest
+
 import torch
 import torch.nn as nn
-from pytorch_ner.nn_modules.rnn import DynamicRNN
 
+from pytorch_ner.nn_modules.rnn import DynamicRNN
 
 embeddings = torch.randn(10, 20, 128)  # [batch_size, seq_len, emb_dim]
 lengths = torch.arange(start=20, end=10, step=-1)
@@ -37,7 +38,6 @@ lstm = DynamicRNN(
 
 
 class TestRNN(unittest.TestCase):
-
     def test_rnn_shape(self):
         self.assertTrue(
             rnn(embeddings, lengths).size() == torch.Size([10, 20, 256]),
@@ -54,5 +54,5 @@ class TestRNN(unittest.TestCase):
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

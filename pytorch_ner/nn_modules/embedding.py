@@ -1,36 +1,37 @@
+from typing import Dict, List, Tuple
+
 import numpy as np
 import torch
 import torch.nn as nn
-from typing import Tuple, List, Dict
-from gensim.models import KeyedVectors, FastText
+from gensim.models import FastText, KeyedVectors
 
 
 def load_glove(
-        path: str,
-        add_pad: bool = True,
-        add_unk: bool = True,
+    path: str,
+    add_pad: bool = True,
+    add_unk: bool = True,
 ) -> Tuple[Dict[str, int], np.ndarray]:
     """
     Load glove embeddings.
     """
 
-    token2idx = {}
-    token_embeddings = []
+    token2idx: Dict[str, int] = {}
+    token_embeddings_list = []
 
     if add_pad:
-        token2idx['<PAD>'] = len(token2idx)
+        token2idx["<PAD>"] = len(token2idx)
     if add_unk:
-        token2idx['<UNK>'] = len(token2idx)
+        token2idx["<UNK>"] = len(token2idx)
 
-    with open(path, mode='r') as fp:
+    with open(path, mode="r") as fp:
         for line in fp:
             token, embedding = line.split(maxsplit=1)
             embedding = np.array([float(i) for i in embedding.split()])
 
             token2idx[token] = len(token2idx)
-            token_embeddings.append(embedding)
+            token_embeddings_list.append(embedding)
 
-    token_embeddings = np.array(token_embeddings)
+    token_embeddings = np.array(token_embeddings_list)
 
     if add_unk:
         unk_embedding = token_embeddings.mean(axis=0)
@@ -43,20 +44,20 @@ def load_glove(
 
 
 def load_word2vec(
-        path: str,
-        add_pad: bool = True,
-        add_unk: bool = True,
+    path: str,
+    add_pad: bool = True,
+    add_unk: bool = True,
 ) -> Tuple[Dict[str, int], np.ndarray]:
     """
     Load word2vec embeddings.
     """
 
-    token2idx = {}
+    token2idx: Dict[str, int] = {}
 
     if add_pad:
-        token2idx['<PAD>'] = len(token2idx)
+        token2idx["<PAD>"] = len(token2idx)
     if add_unk:
-        token2idx['<UNK>'] = len(token2idx)
+        token2idx["<UNK>"] = len(token2idx)
 
     model = KeyedVectors.load_word2vec_format(path)
     for token in model.index2word:
@@ -75,9 +76,9 @@ def load_word2vec(
 
 
 def fasttext2word2vec(
-        path: str,
-        tokens: List[str],
-        add_pad: bool = True,
+    path: str,
+    tokens: List[str],
+    add_pad: bool = True,
 ) -> Tuple[Dict[str, int], np.ndarray]:
     """
     Represent train/val/test tokens as fasttext word embeddings (like word2vec) to use with nn.Embeddings.
@@ -85,20 +86,20 @@ def fasttext2word2vec(
     Not suitable for inference (use gensim fasttext model).
     """
 
-    token2idx = {}
-    token_embeddings = []
+    token2idx: Dict[str, int] = {}
+    token_embeddings_list = []
 
     if add_pad:
-        token2idx['<PAD>'] = len(token2idx)
+        token2idx["<PAD>"] = len(token2idx)
 
     model = FastText.load(path)
     for token in tokens:
         embedding = model.wv[token]
 
         token2idx[token] = len(token2idx)
-        token_embeddings.append(embedding)
+        token_embeddings_list.append(embedding)
 
-    token_embeddings = np.array(token_embeddings)
+    token_embeddings = np.array(token_embeddings_list)
 
     if add_pad:
         pad_embedding = np.zeros(shape=token_embeddings.shape[-1])
@@ -147,9 +148,9 @@ class EmbeddingWithDropout(nn.Module):
     """
 
     def __init__(
-            self,
-            embedding_layer: nn.Module,
-            dropout: nn.Module,
+        self,
+        embedding_layer: nn.Module,
+        dropout: nn.Module,
     ):
         super(EmbeddingWithDropout, self).__init__()
         self.embedding = embedding_layer

@@ -1,11 +1,11 @@
+from typing import Dict, List, Tuple, Union
+
 import numpy as np
-from typing import Tuple, List, Dict, Union
-
 import torch
-from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
+from torch.utils.data import Dataset
 
-from .prepare_data import process_tokens, process_labels
+from .prepare_data import process_labels, process_tokens
 
 
 class NERDataset(Dataset):
@@ -15,12 +15,12 @@ class NERDataset(Dataset):
     """
 
     def __init__(
-            self,
-            token_seq: List[List[str]],
-            label_seq: List[List[str]],
-            token2idx: Dict[str, int],
-            label2idx: Dict[str, int],
-            preprocess: bool = True,
+        self,
+        token_seq: List[List[str]],
+        label_seq: List[List[str]],
+        token2idx: Dict[str, int],
+        label2idx: Dict[str, int],
+        preprocess: bool = True,
     ):
         self.token2idx = token2idx
         self.label2idx = label2idx
@@ -55,18 +55,18 @@ class NERCollator(object):
     """
 
     def __init__(
-            self,
-            token_padding_value: int,
-            label_padding_value: int,
-            percentile: Union[int, float] = 100,
+        self,
+        token_padding_value: int,
+        label_padding_value: int,
+        percentile: Union[int, float] = 100,
     ):
         self.token_padding_value = token_padding_value
         self.label_padding_value = label_padding_value
         self.percentile = percentile
 
     def __call__(
-            self,
-            batch: List[Tuple[np.ndarray, np.ndarray, np.ndarray]],
+        self,
+        batch: List[Tuple[np.ndarray, np.ndarray, np.ndarray]],
     ) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
 
         tokens, labels, lengths = zip(*batch)
@@ -86,8 +86,12 @@ class NERCollator(object):
 
         sorted_idx = torch.argsort(lengths, descending=True)
 
-        tokens = pad_sequence(tokens, padding_value=self.token_padding_value, batch_first=True)[sorted_idx]
-        labels = pad_sequence(labels, padding_value=self.label_padding_value, batch_first=True)[sorted_idx]
+        tokens = pad_sequence(
+            tokens, padding_value=self.token_padding_value, batch_first=True
+        )[sorted_idx]
+        labels = pad_sequence(
+            labels, padding_value=self.label_padding_value, batch_first=True
+        )[sorted_idx]
         lengths = lengths[sorted_idx]
 
         return tokens, labels, lengths

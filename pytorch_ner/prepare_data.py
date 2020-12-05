@@ -1,10 +1,11 @@
-from typing import Tuple, List, Dict
+from typing import Dict, List, Tuple
+
 from tqdm import tqdm
 
 
 def prepare_conll_data_format(
     path: str,
-    sep: str = '\t',
+    sep: str = "\t",
     lower: bool = True,
     verbose: bool = True,
 ) -> Tuple[List[List[str]], List[List[str]]]:
@@ -27,13 +28,13 @@ def prepare_conll_data_format(
 
     token_seq = []
     label_seq = []
-    with open(path, mode='r') as fp:
+    with open(path, mode="r") as fp:
         tokens = []
         labels = []
         if verbose:
             fp = tqdm(fp)
         for line in fp:
-            if line != '\n':
+            if line != "\n":
                 token, label = line.strip().split(sep)
                 if lower:
                     token = token.lower()
@@ -59,12 +60,12 @@ def get_token2idx(
     Get mapping from tokens to indices to use with Embedding layer.
     """
 
-    token2idx = {}
+    token2idx: Dict[str, int] = {}
 
     if add_pad:
-        token2idx['<PAD>'] = len(token2idx)
+        token2idx["<PAD>"] = len(token2idx)
     if add_unk:
-        token2idx['<UNK>'] = len(token2idx)
+        token2idx["<UNK>"] = len(token2idx)
 
     for token, cnt in token2cnt.items():
         if cnt >= min_count:
@@ -78,7 +79,7 @@ def get_label2idx(label_set: List[str]) -> Dict[str, int]:
     Get mapping from labels to indices.
     """
 
-    label2idx = {}
+    label2idx: Dict[str, int] = {}
 
     for label in label_set:
         label2idx[label] = len(label2idx)
@@ -86,7 +87,9 @@ def get_label2idx(label_set: List[str]) -> Dict[str, int]:
     return label2idx
 
 
-def process_tokens(tokens: List[str], token2idx: Dict[str, int], unk: str = '<UNK>') -> List[int]:
+def process_tokens(
+    tokens: List[str], token2idx: Dict[str, int], unk: str = "<UNK>"
+) -> List[int]:
     """
     Transform list of tokens into list of tokens' indices.
     """
