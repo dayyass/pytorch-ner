@@ -1,5 +1,6 @@
 ![test Status](https://github.com/dayyass/pytorch_ner/workflows/test/badge.svg)
 ![lint Status](https://github.com/dayyass/pytorch_ner/workflows/lint/badge.svg)
+![License](https://img.shields.io/github/license/dayyass/pytorch_ner)
 ![release (latest by date)](https://img.shields.io/github/v/release/dayyass/pytorch_ner)
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
