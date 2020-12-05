@@ -13,7 +13,7 @@ from pytorch_ner.prepare_data import (
     get_token2idx,
     prepare_conll_data_format,
 )
-from pytorch_ner.train import train, validate_loop
+from pytorch_ner.train import train, train_loop
 from tests.test_nn_modules.test_architecture import model_bilstm as model
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -69,7 +69,7 @@ train(
 class TestTrain(unittest.TestCase):
     def test_val_metrics(self):
 
-        val_metrics = validate_loop(
+        metrics = train_loop(
             model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,
@@ -77,7 +77,7 @@ class TestTrain(unittest.TestCase):
             verbose=False,
         )
 
-        for metric_name, metric_list in val_metrics.items():
+        for metric_name, metric_list in metrics.items():
             if not metric_name.startswith("loss"):
                 self.assertTrue(np.mean(metric_list) == 1.0)
 
