@@ -21,7 +21,9 @@ device = torch.device("cpu")
 
 # LOAD DATA
 
-token_seq, label_seq = prepare_conll_data_format(path="tests/data/conll.txt", verbose=False)
+token_seq, label_seq = prepare_conll_data_format(
+    path="tests/data/conll.txt", verbose=False
+)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
@@ -90,7 +92,7 @@ class TestTrain(unittest.TestCase):
 
         for metric_name in metrics_after.keys():
             if not metric_name.startswith("loss"):
-                self.assertLess(
+                self.assertLessEqual(
                     np.mean(metrics_before[metric_name]),
                     np.mean(metrics_after[metric_name]),
                 )
