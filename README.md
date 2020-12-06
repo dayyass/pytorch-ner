@@ -32,8 +32,8 @@ Build container<br/>
 `$ docker build -t pytorch_ner .`
 
 
-Run it<br/>
-`$ docker container run --rm -it --gpus all -v ${PWD}:/workspace -p 6006:6006 pytorch_ner`
+Run it (add `--gpus all` to use GPUs)<br/>
+`$ docker container run --rm -it -v ${PWD}:/workspace -p 6006:6006 pytorch_ner`
 
 ### Data Format:
 Text file containing separated tokens and labels on each line. Sentences are separated by empty line.
