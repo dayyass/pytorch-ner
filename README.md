@@ -64,7 +64,3 @@ Run it (add `--gpus all` to use GPUs)<br/>
 
 ### Requirements
 Python 3.6+
-
-<!--
-# TODO: add model results
--->
