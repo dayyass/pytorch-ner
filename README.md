@@ -9,7 +9,6 @@
 ### About
 Pipeline for training NER models using PyTorch.<br/>
 ONNX export supported.<br/>
-Python 3.6+
 
 ### Usage
 The user interface consists of only one file *config.yaml*.<br/>
@@ -52,6 +51,16 @@ List of implemented models:
 - [ ] BiLTSMCNNAttn
 - [ ] BiLTSMCNNAttnCRF
 
-<!--
-# TODO: add model results
--->
+### Docker
+To simplify installation, you can deploy a container with all dependencies pre-installed.
+
+Build container<br/>
+`$ docker build -t pytorch_ner .`
+
+
+Run it (add `--gpus all` to use GPUs)<br/>
+`$ docker container run --rm -it -v ${PWD}:/workspace -p 6006:6006 pytorch_ner`
+
+
+### Requirements
+Python 3.6+

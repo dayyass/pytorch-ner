@@ -16,12 +16,14 @@ from pytorch_ner.prepare_data import (
 from pytorch_ner.train import train, validate_loop
 from tests.test_nn_modules.test_architecture import model_bilstm as model
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 
 
 # LOAD DATA
 
-token_seq, label_seq = prepare_conll_data_format("tests/data/conll.txt", verbose=False)
+token_seq, label_seq = prepare_conll_data_format(
+    path="tests/data/conll.txt", verbose=False
+)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
@@ -90,7 +92,7 @@ class TestTrain(unittest.TestCase):
 
         for metric_name in metrics_after.keys():
             if not metric_name.startswith("loss"):
-                self.assertLess(
+                self.assertLessEqual(
                     np.mean(metrics_before[metric_name]),
                     np.mean(metrics_after[metric_name]),
                 )
