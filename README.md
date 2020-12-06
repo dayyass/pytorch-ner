@@ -54,11 +54,11 @@ List of implemented models:
 ### Docker
 To simplify installation, you can deploy a container with all dependencies pre-installed.
 
-Build container<br/>
+Build container:<br/>
 `$ docker build -t pytorch_ner .`
 
 
-Run it (add `--gpus all` to use GPUs)<br/>
+Run container (add `--gpus all` to use GPUs):<br/>
 `$ docker container run --rm -it -v ${PWD}:/workspace -p 6006:6006 pytorch_ner`
 
 
