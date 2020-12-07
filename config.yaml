@@ -30,10 +30,11 @@ dataloader:
   batch_size: 64
 
 model:
+  architecture: BiLSTM
   embedding:
     embedding_dim: 128
   rnn:
-    rnn_unit: nn.LSTM
+    rnn_unit: LSTM
     hidden_size: 256
     num_layers: 1
     dropout: 0
