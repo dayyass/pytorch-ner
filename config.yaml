@@ -3,18 +3,18 @@ torch:
 
 prepare_data:
   train_data:
-    path: 'tests/data/conll.txt'
-    sep: '	'
+    path: 'data/conll2003/train.txt'
+    sep: ' '
     lower: true
     verbose: true
   val_data:
-    path: 'tests/data/conll.txt'
-    sep: '	'
+    path: 'data/conll2003/val.txt'
+    sep: ' '
     lower: true
     verbose: true
   test_data:
-    path: 'tests/data/conll.txt'
-    sep: '	'
+    path: 'data/conll2003/test.txt'
+    sep: ' '
     lower: true
     verbose: true
   token2idx:

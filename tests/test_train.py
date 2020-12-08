@@ -22,7 +22,7 @@ device = torch.device("cpu")
 # LOAD DATA
 
 token_seq, label_seq = prepare_conll_data_format(
-    path="tests/data/conll.txt", verbose=False
+    path="tests/data/conll.txt", sep=" ", verbose=False
 )
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])

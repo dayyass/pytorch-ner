@@ -11,7 +11,9 @@ from pytorch_ner.prepare_data import (
     prepare_conll_data_format,
 )
 
-token_seq, label_seq = prepare_conll_data_format("tests/data/conll.txt", verbose=False)
+token_seq, label_seq = prepare_conll_data_format(
+    "tests/data/conll.txt", sep=" ", verbose=False
+)
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
 label_set = sorted(set(label for sentence in label_seq for label in sentence))
