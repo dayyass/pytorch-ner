@@ -151,6 +151,14 @@ def train(
     Training / validation loop for n_epoch with final testing.
     """
 
+    # sanity check
+    print("sanity check")
+    tokens, _, lengths = next(iter(valloader))
+    tokens, lengths = tokens.to(device), lengths.to(device)
+    with torch.no_grad():
+        _ = model(tokens, lengths)
+    print()
+
     for epoch in range(n_epoch):
 
         if verbose:
