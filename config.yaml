@@ -27,7 +27,7 @@ dataloader:
   token_padding: '<PAD>'
   label_padding: 'O'
   percentile: 100
-  batch_size: 64
+  batch_size: 256
 
 model:
   embedding:

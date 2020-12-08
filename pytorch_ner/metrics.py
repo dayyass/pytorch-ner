@@ -20,7 +20,9 @@ def calculate_metrics(
     f1_per_class = f1_score(
         y_true=y_true, y_pred=y_pred, labels=range(len(idx2label)), average=None
     )
+    f1_micro = f1_score(y_true=y_true, y_pred=y_pred, average="micro")
     for cls, f1 in enumerate(f1_per_class):
         metrics[f"f1 {idx2label[cls]}"].append(f1)
+    metrics["f1 micro"].append(f1_micro)
 
     return metrics
