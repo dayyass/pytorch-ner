@@ -1,3 +1,4 @@
+import importlib
 import os
 import random
 import shutil
@@ -44,3 +45,16 @@ def rmdir(path: str):
 
     if os.path.exists(path):
         shutil.rmtree(path)
+
+
+def str_to_class(module_name, class_name):
+    """
+    Convert string to Python class object.
+    https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object
+    """
+
+    # load the module, will raise ImportError if module cannot be loaded
+    module = importlib.import_module(module_name)
+    # get the class, will raise AttributeError if class cannot be found
+    cls = getattr(module, class_name)
+    return cls
