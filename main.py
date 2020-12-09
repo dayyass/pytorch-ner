@@ -1,3 +1,4 @@
+import os
 from argparse import ArgumentParser
 from collections import Counter
 
@@ -19,6 +20,7 @@ from pytorch_ner.prepare_data import (
 )
 from pytorch_ner.save import save_model
 from pytorch_ner.train import train
+from pytorch_ner.utils import set_global_seed
 
 
 def main(path_to_config: str):
@@ -26,7 +28,12 @@ def main(path_to_config: str):
     with open(path_to_config, mode="r") as fp:
         config = yaml.safe_load(fp)
 
+    # check existence of save path_to_folder
+    if os.path.exists(config["save"]["path_to_folder"]):
+        raise FileExistsError("save directory already exists")
+
     device = torch.device(config["torch"]["device"])
+    set_global_seed(config["torch"]["seed"])
 
     # LOAD DATA
 
