@@ -3,7 +3,7 @@ import unittest
 import torch
 import torch.nn as nn
 
-from pytorch_ner.nn_modules.architecture import BiLSTM, BiLSTMAttn
+from pytorch_ner.neural_network import BiLSTM, BiLSTMAttn
 from pytorch_ner.nn_modules.attention import (
     AttentionWithSkipConnectionLayerNorm,
     MultiheadSelfAttention,

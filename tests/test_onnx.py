@@ -1,6 +1,6 @@
 from pytorch_ner.onnx import onnx_export_and_check
 from pytorch_ner.utils import mkdir
-from tests.test_nn_modules.test_architecture import model_bilstm as model
+from tests.test_neural_network import model_bilstm as model
 
 path_to_save = "models/model.onnx"
 mkdir("models")

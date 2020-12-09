@@ -14,7 +14,7 @@ from pytorch_ner.prepare_data import (
     prepare_conll_data_format,
 )
 from pytorch_ner.train import train, validate_loop
-from tests.test_nn_modules.test_architecture import model_bilstm as model
+from tests.test_neural_network import model_bilstm as model
 
 device = torch.device("cpu")
 
