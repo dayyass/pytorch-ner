@@ -4,10 +4,14 @@ import unittest
 import yaml
 
 from pytorch_ner.save import save_model
+from pytorch_ner.utils import rmdir
 from tests.test_train import label2idx, model, token2idx
 
 path_to_folder = "models/test_save/"
 path_to_onnx_folder = "models/test_onnx_save/"
+
+rmdir(path_to_folder)
+rmdir(path_to_onnx_folder)
 
 
 with open("config.yaml", "r") as fp:
