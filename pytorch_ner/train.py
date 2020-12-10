@@ -65,9 +65,9 @@ def train_loop(
         # backward pass
         loss.backward()
 
-        #Gradient Value Clipping
+        # Gradient Value Clipping
         # nn.utils.clip_grad_value_(model.parameters(), clip_value=clip_grad)
-        
+
         # Gradient Norm Clipping
         nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad, norm_type=2)
 
@@ -172,7 +172,7 @@ def train(
             optimizer=optimizer,
             device=device,
             clip_grad=clip_grad,
-            verbose=verbose,            
+            verbose=verbose,
         )
 
         if verbose:
