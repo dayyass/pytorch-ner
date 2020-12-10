@@ -19,10 +19,9 @@ def save_model(
     export_onnx: bool = False,
 ):
 
-    # if os.path.exists(path_to_folder):
-    #     # make empty dir
-    #     rmdir(path_to_folder)
-    # mkdir(path_to_folder)
+    if not os.path.exists(path_to_folder):
+        # make empty dir
+        mkdir(path_to_folder)
 
     model.cpu()
     model.eval()
