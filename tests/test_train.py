@@ -75,6 +75,10 @@ train(
     optimizer=optimizer,
     device=device,
     n_epoch=5,
+    export_onnx=True,
+    path_to_folder="models/test_main/",
+    save_frequency=1,
+    save_best_weights=True,
     verbose=False,
 )
 
