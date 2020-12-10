@@ -16,6 +16,7 @@ from pytorch_ner.model_checkpoint import model_checkpoint
 from pytorch_ner.utils import mkdir, rmdir
 from pytorch_ner.onnx import onnx_export_and_check
 
+
 def masking(lengths: torch.Tensor) -> torch.Tensor:
     """
     Convert lengths tensor to binary mask
@@ -202,13 +203,13 @@ def train(
         model_checkpoint(
             model=model,
             epoch=epoch,
-            save_best_weights=save_best_weights, 
+            save_best_weights=save_best_weights,
             val_metrics=val_metrics,
             val_losses=val_losses,
             path_to_folder=path_to_folder,
             export_onnx=export_onnx,
             save_frequency=save_frequency,
-            )
+        )
 
     if testloader is not None:
 

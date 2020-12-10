@@ -18,7 +18,7 @@ def save_model(
     config: Dict,
     export_onnx: bool = False,
 ):
-    
+
     # if os.path.exists(path_to_folder):
     #     # make empty dir
     #     rmdir(path_to_folder)
