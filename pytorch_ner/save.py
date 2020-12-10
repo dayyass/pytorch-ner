@@ -18,9 +18,11 @@ def save_model(
     config: Dict,
     export_onnx: bool = False,
 ):
-    # make empty dir
-    rmdir(path_to_folder)
-    mkdir(path_to_folder)
+    
+    # if os.path.exists(path_to_folder):
+    #     # make empty dir
+    #     rmdir(path_to_folder)
+    # mkdir(path_to_folder)
 
     model.cpu()
     model.eval()

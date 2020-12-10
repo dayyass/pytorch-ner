@@ -52,4 +52,7 @@ train:
 
 save:
   path_to_folder: 'models/test_main/'
+  model_checkpoint:
+    save_frequency: 2
+    save_best_weights: true
   export_onnx: true
