@@ -202,6 +202,7 @@ def main(path_to_config: str):
         device=device,
         n_epoch=config["train"]["n_epoch"],
         verbose=config["train"]["verbose"],
+        clip_grad=config["optimizer"]["clip_grad"],
     )
 
     # SAVE MODEL

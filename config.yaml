@@ -45,6 +45,7 @@ optimizer:
   beta_1: 0.999
   weight_decay: 0
   amsgrad: false
+  clip_grad: 0.1
 
 train:
   n_epoch: 10

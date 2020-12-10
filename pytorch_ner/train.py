@@ -33,6 +33,7 @@ def train_loop(
     criterion: Callable,
     optimizer: optim.Optimizer,
     device: torch.device,
+    clip_grad: float,
     verbose: bool = True,
 ) -> DefaultDict[str, List[float]]:
     """
@@ -63,6 +64,13 @@ def train_loop(
 
         # backward pass
         loss.backward()
+
+        #Gradient Value Clipping
+        # nn.utils.clip_grad_value_(model.parameters(), clip_value=clip_grad)
+        
+        # Gradient Norm Clipping
+        nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad, norm_type=2)
+
         optimizer.step()
         optimizer.zero_grad()
 
@@ -144,6 +152,7 @@ def train(
     optimizer: optim.Optimizer,
     device: torch.device,
     n_epoch: int,
+    clip_grad: float,
     testloader: Optional[DataLoader] = None,
     verbose: bool = True,
 ):
@@ -162,7 +171,8 @@ def train(
             criterion=criterion,
             optimizer=optimizer,
             device=device,
-            verbose=verbose,
+            clip_grad=clip_grad,
+            verbose=verbose,            
         )
 
         if verbose:
