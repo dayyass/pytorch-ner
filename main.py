@@ -201,6 +201,9 @@ def main(path_to_config: str):
         optimizer=optimizer,
         device=device,
         n_epoch=config["train"]["n_epoch"],
+        early_stopping_flag=config["train"]["early_stopping_flag"],
+        early_stopping_patience=config["train"]["early_stopping_patience"],
+        early_stopping_delta=config["train"]["early_stopping_delta"],
         verbose=config["train"]["verbose"],
     )
 

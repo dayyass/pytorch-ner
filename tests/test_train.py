@@ -75,6 +75,9 @@ train(
     optimizer=optimizer,
     device=device,
     n_epoch=5,
+    early_stopping_flag=True,
+    early_stopping_patience=10,
+    early_stopping_delta=0.05,
     verbose=False,
 )
 
