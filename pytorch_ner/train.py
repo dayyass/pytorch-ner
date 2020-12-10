@@ -188,8 +188,8 @@ def train(
             print()
 
         if tensorboard:
-            writer.add_scalar('Loss/train', np.mean((train_metrics['loss'])), epoch)
-            writer.add_scalar('Loss/val', np.mean((val_metrics['loss'])), epoch)
+            writer.add_scalar("Loss/train", np.mean((train_metrics["loss"])), epoch)
+            writer.add_scalar("Loss/val", np.mean((val_metrics["loss"])), epoch)
 
     if testloader is not None:
 
