@@ -181,11 +181,11 @@ def main(path_to_config: str):
 
     criterion = nn.CrossEntropyLoss(reduction="none")  # hardcoded
 
-    optimizer_class = str_to_class(
+    optimizer_type = str_to_class(
         module_name="torch.optim",
-        class_name=config["optimizer"]["optimizer"],
+        class_name=config["optimizer"]["optimizer_type"],
     )
-    optimizer = optimizer_class(
+    optimizer = optimizer_type(
         params=model.parameters(),
         **config["optimizer"]["params"],
     )

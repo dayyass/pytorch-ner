@@ -40,7 +40,7 @@ model:
     bidirectional: true
 
 optimizer:
-  optimizer: Adam
+  optimizer_type: Adam
   params:
     lr: 0.001
     weight_decay: 0
