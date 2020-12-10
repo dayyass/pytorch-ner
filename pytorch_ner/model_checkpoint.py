@@ -2,13 +2,13 @@ import json
 import os
 from typing import Dict
 
+import numpy as np
 import torch
 import torch.nn as nn
 import yaml
 
 from pytorch_ner.onnx import onnx_export_and_check
 from pytorch_ner.utils import mkdir, rmdir
-import numpy as np
 
 
 def model_checkpoint(

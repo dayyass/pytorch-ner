@@ -1,8 +1,8 @@
+import os
 from collections import defaultdict
 from typing import Callable, DefaultDict, List, Optional
 
 import numpy as np
-import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -10,11 +10,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from pytorch_ner.metrics import calculate_metrics
-from pytorch_ner.utils import to_numpy
-
 from pytorch_ner.model_checkpoint import model_checkpoint
-from pytorch_ner.utils import mkdir, rmdir
 from pytorch_ner.onnx import onnx_export_and_check
+from pytorch_ner.utils import mkdir, rmdir, to_numpy
 
 
 def masking(lengths: torch.Tensor) -> torch.Tensor:
