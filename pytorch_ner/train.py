@@ -56,8 +56,6 @@ def train_loop(
             labels.to(device),
             lengths.to(device),
         )
-        tokens, lengths = tokens.long(), lengths.long()
-        labels = labels.long()
 
         mask = masking(lengths)
 
@@ -112,8 +110,6 @@ def validate_loop(
             labels.to(device),
             lengths.to(device),
         )
-        tokens, lengths = tokens.long(), lengths.long()
-        labels = labels.long()
 
         mask = masking(lengths)
 
