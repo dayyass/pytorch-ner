@@ -8,11 +8,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
-from pytorch_ner.prepare_data import (
-    get_label2idx,
-    get_token2idx,
-    prepare_conll_data_format,
-)
+from pytorch_ner.prepare_data import (get_label2idx, get_token2idx,
+                                      prepare_conll_data_format)
 from pytorch_ner.train import train, validate_loop
 from tests.test_nn_modules.test_architecture import model_bilstm as model
 
@@ -76,6 +73,7 @@ train(
     device=device,
     n_epoch=5,
     verbose=False,
+    tensorboard=True,
 )
 
 
