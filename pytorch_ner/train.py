@@ -66,7 +66,9 @@ def train_loop(
         loss.backward()
 
         # Gradient Norm Clipping
-        nn.utils.clip_grad_norm_(model.parameters(), max_norm=clip_grad_norm, norm_type=2)
+        nn.utils.clip_grad_norm_(
+            model.parameters(), max_norm=clip_grad_norm, norm_type=2
+        )
 
         optimizer.step()
         optimizer.zero_grad()
