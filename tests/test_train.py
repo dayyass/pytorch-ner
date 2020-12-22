@@ -13,7 +13,7 @@ from pytorch_ner.prepare_data import (
     get_token2idx,
     prepare_conll_data_format,
 )
-from pytorch_ner.train import train, validate_loop
+from pytorch_ner.train import train, validate_epoch
 from tests.test_nn_modules.test_architecture import model_bilstm as model
 
 device = torch.device("cpu")
@@ -55,7 +55,7 @@ optimizer = optim.Adam(model.parameters())
 
 # VALIDATE
 
-metrics_before = validate_loop(
+metrics_before = validate_epoch(
     model=model.to(device),
     dataloader=dataloader,
     criterion=criterion,
@@ -82,7 +82,7 @@ train(
 class TestTrain(unittest.TestCase):
     def test_val_metrics(self):
 
-        metrics_after = validate_loop(
+        metrics_after = validate_epoch(
             model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,
