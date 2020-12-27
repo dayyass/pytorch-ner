@@ -49,7 +49,7 @@ class NERDataset(Dataset):
         return np.array(tokens), np.array(labels), np.array(lengths)
 
 
-class NERCollator(object):
+class NERCollator:
     """
     Collator that handles variable-size sentences.
     """
