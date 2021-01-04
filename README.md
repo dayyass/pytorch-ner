@@ -11,6 +11,11 @@ Pipeline for training NER models using PyTorch.<br/>
 ONNX export supported.<br/>
 
 ### Usage
+First, install dependencies:
+```
+pip install requirements.txt
+```
+
 The user interface consists of only one file *config.yaml*.<br/>
 Change *config.yaml* to create the desired configuration and start the pipeline with the following command:
 ```
