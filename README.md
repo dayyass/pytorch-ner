@@ -13,7 +13,12 @@ ONNX export supported.<br/>
 ### Usage
 First, install dependencies:
 ```
-pip install requirements.txt
+# clone repo   
+git clone git@github.com:dayyass/pytorch_ner.git
+
+# install dependencies   
+cd pytorch_ner
+pip install -r requirements.txt
 ```
 
 The user interface consists of only one file *config.yaml*.<br/>
