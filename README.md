@@ -14,7 +14,7 @@ ONNX export supported.<br/>
 First, install dependencies:
 ```
 # clone repo   
-git clone git@github.com:dayyass/pytorch_ner.git
+git clone https://github.com/dayyass/pytorch_ner.git
 
 # install dependencies   
 cd pytorch_ner
