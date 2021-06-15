@@ -77,7 +77,7 @@ Python 3.6+
 
 ### Citation
 If you use **pytorch_ner** in a scientific publication, we would appreciate references to the following BibTex entry:
-```
+```bibtex
 @misc{dayyass_pytorch_ner,
     author = {El-Ayyass, Dani},
     title = {Pipeline for training NER models using PyTorch},
