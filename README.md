@@ -79,9 +79,9 @@ Python 3.6+
 If you use **pytorch_ner** in a scientific publication, we would appreciate references to the following BibTex entry:
 ```bibtex
 @misc{dayyass2020ner,
-    author =       {El-Ayyass, Dani},
-    title =        {Pipeline for training NER models using PyTorch},
+    author       = {El-Ayyass, Dani},
+    title        = {Pipeline for training NER models using PyTorch},
     howpublished = {\url{https://github.com/dayyass/pytorch_ner}},
-    year =         {2020}
+    year         = {2020}
 }
 ```
