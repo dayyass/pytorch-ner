@@ -9,6 +9,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from pytorch_ner.metrics import calculate_metrics
+
+# import EarlyStopping
+from pytorch_ner.pytorchtools import EarlyStopping
 from pytorch_ner.utils import to_numpy
 
 
@@ -144,12 +147,21 @@ def train(
     optimizer: optim.Optimizer,
     device: torch.device,
     n_epoch: int,
+    early_stopping_flag: bool,
+    early_stopping_patience: int,
+    early_stopping_delta: float,
     testloader: Optional[DataLoader] = None,
     verbose: bool = True,
 ):
     """
     Training / validation loop for n_epoch with final testing.
     """
+
+    if early_stopping_flag:
+        # initialize the early_stopping object
+        early_stopping = EarlyStopping(
+            patience=early_stopping_patience, delta=early_stopping_delta, verbose=True
+        )
 
     for epoch in range(n_epoch):
 
@@ -182,6 +194,16 @@ def train(
             for metric_name, metric_list in val_metrics.items():
                 print(f"val {metric_name}: {np.mean(metric_list)}")
             print()
+
+        if early_stopping_flag:
+            # early_stopping needs the validation loss to check if it has decresed,
+            # and if it has, it will make a checkpoint of the current model
+            valid_loss = np.mean(val_metrics["loss"])
+            early_stopping(valid_loss, model)
+
+            if early_stopping.early_stop:
+                print("Early stopping")
+                break
 
     if testloader is not None:
 

@@ -47,8 +47,11 @@ optimizer:
   amsgrad: false
 
 train:
-  n_epoch: 10
+  n_epoch: 50
   verbose: true
+  early_stopping_flag: true
+  early_stopping_patience: 2
+  early_stopping_delta: 0.1  
 
 save:
   path_to_folder: 'models/test_main/'
