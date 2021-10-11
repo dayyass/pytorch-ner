@@ -1,9 +1,4 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v3.3.0
-  hooks:
-    - id: no-commit-to-branch
-      args: ['--branch', 'main']
 - repo: https://github.com/pre-commit/mirrors-isort
   rev: v5.6.4
   hooks:
@@ -17,9 +12,10 @@ repos:
   rev: v2.3.0
   hooks:
     - id: check-yaml
-    - id: name-tests-test
-      args: ['--django']
+#    - id: name-tests-test
+#      args: ['--django']
     - id: debug-statements
+    - id: end-of-file-fixer
     - id: trailing-whitespace
     - id: check-docstring-first
     - id: requirements-txt-fixer
