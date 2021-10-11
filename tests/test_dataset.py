@@ -85,17 +85,31 @@ class TestCollator(unittest.TestCase):
     def test_collator_1(self):
         tokens, labels, lengths = collator_1(batch)
         self.assertTrue(
-            torch.equal(tokens, torch.tensor([[1, 2, 3, 4, 5], [1, 2, 3, 0, 0]], dtype=torch.long))
+            torch.equal(
+                tokens,
+                torch.tensor([[1, 2, 3, 4, 5], [1, 2, 3, 0, 0]], dtype=torch.long),
+            )
         )
         self.assertTrue(
-            torch.equal(labels, torch.tensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]], dtype=torch.long))
+            torch.equal(
+                labels,
+                torch.tensor([[1, 1, 1, 1, 1], [1, 1, 1, 0, 0]], dtype=torch.long),
+            )
         )
         self.assertTrue(torch.equal(lengths, torch.tensor([5, 3], dtype=torch.long)))
 
     def test_collator_2(self):
         tokens, labels, lengths = collator_2(batch)
-        self.assertTrue(torch.equal(tokens, torch.tensor([[1, 2, 3, 4], [1, 2, 3, 1]], dtype=torch.long)))
-        self.assertTrue(torch.equal(labels, torch.tensor([[1, 1, 1, 1], [1, 1, 1, 1]], dtype=torch.long)))
+        self.assertTrue(
+            torch.equal(
+                tokens, torch.tensor([[1, 2, 3, 4], [1, 2, 3, 1]], dtype=torch.long)
+            )
+        )
+        self.assertTrue(
+            torch.equal(
+                labels, torch.tensor([[1, 1, 1, 1], [1, 1, 1, 1]], dtype=torch.long)
+            )
+        )
         self.assertTrue(torch.equal(lengths, torch.tensor([4, 3], dtype=torch.long)))
 
 
