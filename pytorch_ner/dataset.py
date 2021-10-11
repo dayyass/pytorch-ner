@@ -78,11 +78,12 @@ class NERCollator(object):
 
         lengths = torch.tensor(
             np.clip(lengths, a_min=0, a_max=max_len),
+            dtype=torch.long,
         ).squeeze(-1)
 
         for i in range(len(batch)):
-            tokens[i] = torch.tensor(tokens[i][:max_len])
-            labels[i] = torch.tensor(labels[i][:max_len])
+            tokens[i] = torch.tensor(tokens[i][:max_len], dtype=torch.long)
+            labels[i] = torch.tensor(labels[i][:max_len], dtype=torch.long)
 
         sorted_idx = torch.argsort(lengths, descending=True)
 
