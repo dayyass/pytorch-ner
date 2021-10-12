@@ -18,4 +18,5 @@ dist
 
 *.egg-info
 
-models
+models/*
+!models/README.md
