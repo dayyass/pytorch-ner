@@ -8,6 +8,7 @@ import yaml
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
+from pytorch_ner.model_checkpoint import model_checkpoint
 from pytorch_ner.nn_modules.architecture import BiLSTM
 from pytorch_ner.nn_modules.embedding import Embedding
 from pytorch_ner.nn_modules.linear import LinearHead
@@ -201,6 +202,10 @@ def main(path_to_config: str):
         optimizer=optimizer,
         device=device,
         n_epoch=config["train"]["n_epoch"],
+        export_onnx=config["save"]["export_onnx"],
+        path_to_folder=config["save"]["path_to_folder"],
+        save_frequency=config["save"]["model_checkpoint"]["save_frequency"],
+        save_best_weights=config["save"]["model_checkpoint"]["save_best_weights"],
         verbose=config["train"]["verbose"],
     )
 

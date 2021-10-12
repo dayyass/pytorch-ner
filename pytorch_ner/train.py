@@ -1,3 +1,4 @@
+import os
 from collections import defaultdict
 from typing import Callable, DefaultDict, List, Optional
 
@@ -9,7 +10,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from pytorch_ner.metrics import calculate_metrics
-from pytorch_ner.utils import to_numpy
+from pytorch_ner.model_checkpoint import model_checkpoint
+from pytorch_ner.onnx import onnx_export_and_check
+from pytorch_ner.utils import mkdir, rmdir, to_numpy
 
 
 def masking(lengths: torch.Tensor) -> torch.Tensor:
@@ -144,12 +147,23 @@ def train(
     optimizer: optim.Optimizer,
     device: torch.device,
     n_epoch: int,
+    export_onnx: bool,
+    path_to_folder: str,
+    save_frequency: int,
+    save_best_weights: bool,
     testloader: Optional[DataLoader] = None,
     verbose: bool = True,
 ):
     """
     Training / validation loop for n_epoch with final testing.
     """
+    if os.path.exists(path_to_folder):
+        # delete any previous versions of models
+        rmdir(path_to_folder)
+    mkdir(path_to_folder)
+
+    # List that tracks val_loss over training to save best weights
+    val_losses = [np.inf]
 
     for epoch in range(n_epoch):
 
@@ -182,6 +196,18 @@ def train(
             for metric_name, metric_list in val_metrics.items():
                 print(f"val {metric_name}: {np.mean(metric_list)}")
             print()
+
+        # Model Checkpoint
+        model_checkpoint(
+            model=model,
+            epoch=epoch,
+            save_best_weights=save_best_weights,
+            val_metrics=val_metrics,
+            val_losses=val_losses,
+            path_to_folder=path_to_folder,
+            export_onnx=export_onnx,
+            save_frequency=save_frequency,
+        )
 
     if testloader is not None:
 
