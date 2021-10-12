@@ -4,7 +4,6 @@ from collections import Counter
 
 import torch
 import torch.nn as nn
-import torch.optim as optim
 import yaml
 from torch.utils.data import DataLoader
 
@@ -20,7 +19,7 @@ from pytorch_ner.prepare_data import (
 )
 from pytorch_ner.save import save_model
 from pytorch_ner.train import train
-from pytorch_ner.utils import set_global_seed
+from pytorch_ner.utils import set_global_seed, str_to_class
 
 
 def main(path_to_config: str):
@@ -192,13 +191,13 @@ def main(path_to_config: str):
 
     criterion = nn.CrossEntropyLoss(reduction="none")  # hardcoded
 
-    # TODO: add optimizer type (hardcoded Adam)
-    optimizer = optim.Adam(
+    optimizer_type = str_to_class(
+        module_name="torch.optim",
+        class_name=config["optimizer"]["optimizer_type"],
+    )
+    optimizer = optimizer_type(
         params=model.parameters(),
-        lr=config["optimizer"]["lr"],
-        betas=(config["optimizer"]["beta_0"], config["optimizer"]["beta_1"]),
-        weight_decay=config["optimizer"]["weight_decay"],
-        amsgrad=config["optimizer"]["amsgrad"],
+        **config["optimizer"]["params"],
     )
 
     # TRAIN MODEL

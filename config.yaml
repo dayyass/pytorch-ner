@@ -41,11 +41,11 @@ model:
     bidirectional: true
 
 optimizer:
-  lr: 0.001
-  beta_0: 0.9
-  beta_1: 0.999
-  weight_decay: 0
-  amsgrad: false
+  optimizer_type: Adam
+  params:
+    lr: 0.001
+    weight_decay: 0
+    amsgrad: false
 
 train:
   n_epoch: 10
