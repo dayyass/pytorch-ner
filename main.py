@@ -210,9 +210,9 @@ def main(path_to_config: str):
         criterion=criterion,
         optimizer=optimizer,
         device=device,
+        clip_grad_norm=config["optimizer"]["clip_grad_norm"],
         n_epoch=config["train"]["n_epoch"],
         verbose=config["train"]["verbose"],
-        clip_grad_norm=config["optimizer"]["clip_grad_norm"],
     )
 
     # SAVE MODEL

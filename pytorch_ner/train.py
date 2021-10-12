@@ -65,9 +65,11 @@ def train_epoch(
         # backward pass
         loss.backward()
 
-        # Gradient Norm Clipping
+        # gradient clipping
         nn.utils.clip_grad_norm_(
-            model.parameters(), max_norm=clip_grad_norm, norm_type=2
+            model.parameters(),
+            max_norm=clip_grad_norm,
+            norm_type=2,
         )
 
         optimizer.step()
@@ -150,10 +152,10 @@ def train(
     criterion: Callable,
     optimizer: optim.Optimizer,
     device: torch.device,
-    n_epoch: int,
     clip_grad_norm: float,
-    testloader: Optional[DataLoader] = None,
+    n_epoch: int,
     verbose: bool = True,
+    testloader: Optional[DataLoader] = None,
 ):
     """
     Training / validation loop for n_epoch with final testing.
