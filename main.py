@@ -8,7 +8,6 @@ import yaml
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
-from pytorch_ner.nn_modules.architecture import BiLSTM
 from pytorch_ner.nn_modules.embedding import Embedding
 from pytorch_ner.nn_modules.linear import LinearHead
 from pytorch_ner.nn_modules.rnn import DynamicRNN
@@ -19,6 +18,7 @@ from pytorch_ner.prepare_data import (
 )
 from pytorch_ner.save import save_model
 from pytorch_ner.train import train
+from pytorch_ner.utils import str_to_class
 
 
 def main(path_to_config: str):
@@ -148,10 +148,11 @@ def main(path_to_config: str):
     )
 
     rnn_layer = DynamicRNN(
-        rnn_unit=eval(config["model"]["rnn"]["rnn_unit"]),  # TODO: fix eval
-        input_size=config["model"]["embedding"][
-            "embedding_dim"
-        ],  # reference to embedding_dim
+        rnn_unit=str_to_class(
+            module_name="torch.nn",
+            class_name=config["model"]["rnn"]["rnn_unit"],
+        ),
+        input_size=config["model"]["embedding"]["embedding_dim"],  # ref to emb_dim
         hidden_size=config["model"]["rnn"]["hidden_size"],
         num_layers=config["model"]["rnn"]["num_layers"],
         dropout=config["model"]["rnn"]["dropout"],
@@ -169,9 +170,12 @@ def main(path_to_config: str):
         ),
     )
 
-    # TODO: add model architecture in config
     # TODO: add attention if needed
-    model = BiLSTM(
+    model_class = str_to_class(
+        module_name="pytorch_ner.nn_modules.architecture",
+        class_name=config["model"]["architecture"],
+    )
+    model = model_class(
         embedding_layer=embedding_layer,
         rnn_layer=rnn_layer,
         linear_head=linear_head,
