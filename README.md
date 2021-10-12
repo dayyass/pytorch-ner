@@ -61,6 +61,13 @@ List of implemented models:
 - [ ] BiLTSMCNNAttn
 - [ ] BiLTSMCNNAttnCRF
 
+### Evaluation
+All results are obtained on CoNLL-2003 dataset. We didn't search the best parameters.
+
+| model | dev f1-micro | test f1-micro |
+|-|-|-|
+| BiLSTM | 0.923 | 0.865 |
+
 ### Docker
 To simplify installation, you can deploy a container with all dependencies pre-installed.
 

@@ -1,14 +1,14 @@
-Beautiful	O
-is	O
-better	O
-than	O
-ugly	O
-.	B-punctuation
+Beautiful O
+is O
+better O
+than O
+ugly O
+. B-punctuation
 
-Explicit	O
-is	O
-better	O
-than	O
-implicit	O
-.	B-punctuation
+Explicit O
+is O
+better O
+than O
+implicit O
+. B-punctuation
 

@@ -13,7 +13,9 @@ from pytorch_ner.nn_modules.embedding import (
 )
 from pytorch_ner.prepare_data import prepare_conll_data_format
 
-token_seq, _ = prepare_conll_data_format(path="tests/data/conll.txt", verbose=False)
+token_seq, _ = prepare_conll_data_format(
+    path="tests/data/conll.txt", sep=" ", verbose=False
+)
 tokens = list(set(token for sentence in token_seq for token in sentence))
 
 _, word2vec_embeddings = load_word2vec(path="tests/data/word2vec.wv")
