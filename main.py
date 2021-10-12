@@ -19,8 +19,7 @@ from pytorch_ner.prepare_data import (
 )
 from pytorch_ner.save import save_model
 from pytorch_ner.train import train
-from pytorch_ner.utils import str_to_class
-from pytorch_ner.utils import set_global_seed
+from pytorch_ner.utils import set_global_seed, str_to_class
 
 
 def main(path_to_config: str):
