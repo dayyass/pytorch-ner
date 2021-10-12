@@ -74,6 +74,7 @@ train(
     criterion=criterion,
     optimizer=optimizer,
     device=device,
+    clip_grad_norm=0.1,
     n_epoch=5,
     verbose=False,
 )

@@ -50,6 +50,7 @@ optimizer:
 train:
   n_epoch: 10
   verbose: true
+  clip_grad_norm: 0.1
 
 save:
   path_to_folder: 'models/test_main/'
