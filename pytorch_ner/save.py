@@ -7,7 +7,7 @@ import torch.nn as nn
 import yaml
 
 from pytorch_ner.onnx import onnx_export_and_check
-from pytorch_ner.utils import mkdir, rmdir
+from pytorch_ner.utils import mkdir
 
 
 def save_model(
@@ -18,8 +18,9 @@ def save_model(
     config: Dict,
     export_onnx: bool = False,
 ):
-    # make empty dir
-    rmdir(path_to_folder)
+    # check existence of save path_to_folder
+    if os.path.exists(path_to_folder):
+        raise FileExistsError("save directory already exists")
     mkdir(path_to_folder)
 
     model.cpu()
