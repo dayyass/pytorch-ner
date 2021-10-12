@@ -1,5 +1,6 @@
 torch:
   device: 'cpu'
+  seed: 42
 
 prepare_data:
   train_data:

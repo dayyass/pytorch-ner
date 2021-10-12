@@ -195,29 +195,29 @@ class TestEmbeddingPreTrained(unittest.TestCase):
 
     def test_embedding_pad(self):
         # word2vec
-        pad_embedding = embedding_w2v_freeze(torch.tensor([0]))
+        pad_embedding = embedding_w2v_freeze(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
-        pad_embedding = embedding_w2v_fine_tune(torch.tensor([0]))
+        pad_embedding = embedding_w2v_fine_tune(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
         # glove
-        pad_embedding = embedding_glove_freeze(torch.tensor([0]))
+        pad_embedding = embedding_glove_freeze(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
-        pad_embedding = embedding_glove_fine_tune(torch.tensor([0]))
+        pad_embedding = embedding_glove_fine_tune(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
     def test_embedding_unk(self):
         # word2vec
-        unk_embedding = embedding_w2v_freeze(torch.tensor([1]))
+        unk_embedding = embedding_w2v_freeze(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding, embedding_w2v_freeze.embedding.weight[2:].mean(dim=0)
             )
         )
 
-        unk_embedding = embedding_w2v_fine_tune(torch.tensor([1]))
+        unk_embedding = embedding_w2v_fine_tune(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding, embedding_w2v_fine_tune.embedding.weight[2:].mean(dim=0)
@@ -225,14 +225,14 @@ class TestEmbeddingPreTrained(unittest.TestCase):
         )
 
         # glove
-        unk_embedding = embedding_glove_freeze(torch.tensor([1]))
+        unk_embedding = embedding_glove_freeze(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding, embedding_glove_freeze.embedding.weight[2:].mean(dim=0)
             )
         )
 
-        unk_embedding = embedding_glove_fine_tune(torch.tensor([1]))
+        unk_embedding = embedding_glove_fine_tune(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding,

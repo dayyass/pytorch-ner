@@ -1,6 +1,22 @@
 *.DS_Store
-*__pycache__/
-*.pyc
-/venv/
-/models/
+.python-version
+*.ipynb
+*.ipynb_checkpoints
+
+# cache
+*__pycache__
+*.mypy_cache
+*.cache
+
+# coverage
+*.coverage
+*coverage.xml
+
+venv
 .idea
+dist
+
+*.egg-info
+
+models/*
+!models/README.md

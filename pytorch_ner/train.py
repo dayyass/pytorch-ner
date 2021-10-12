@@ -27,7 +27,7 @@ def masking(lengths: torch.Tensor) -> torch.Tensor:
 
 
 # TODO: clip_grad_norm
-def train_loop(
+def train_epoch(
     model: nn.Module,
     dataloader: DataLoader,
     criterion: Callable,
@@ -82,7 +82,7 @@ def train_loop(
     return metrics
 
 
-def validate_loop(
+def validate_epoch(
     model: nn.Module,
     dataloader: DataLoader,
     criterion: Callable,
@@ -156,7 +156,7 @@ def train(
         if verbose:
             print(f"epoch [{epoch+1}/{n_epoch}]\n")
 
-        train_metrics = train_loop(
+        train_metrics = train_epoch(
             model=model,
             dataloader=trainloader,
             criterion=criterion,
@@ -170,7 +170,7 @@ def train(
                 print(f"train {metric_name}: {np.mean(metric_list)}")
             print()
 
-        val_metrics = validate_loop(
+        val_metrics = validate_epoch(
             model=model,
             dataloader=valloader,
             criterion=criterion,
@@ -185,7 +185,7 @@ def train(
 
     if testloader is not None:
 
-        test_metrics = validate_loop(
+        test_metrics = validate_epoch(
             model=model,
             dataloader=testloader,
             criterion=criterion,
