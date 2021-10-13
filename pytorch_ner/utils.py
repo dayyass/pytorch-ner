@@ -2,6 +2,7 @@ import importlib
 import os
 import random
 import shutil
+from argparse import ArgumentParser
 
 import numpy as np
 import torch
@@ -59,3 +60,21 @@ def str_to_class(module_name, class_name):
     # get the class, will raise AttributeError if class cannot be found
     cls = getattr(module, class_name)
     return cls
+
+
+def get_argparse() -> ArgumentParser:
+    """Get argument parser.
+
+    Returns:
+        ArgumentParser: Argument parser.
+    """
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--path_to_config",
+        type=str,
+        required=True,
+        help="Path to config",
+    )
+
+    return parser

@@ -1,25 +1,5 @@
-from argparse import ArgumentParser
-
 from .main import _train
-
-
-def get_argparse() -> ArgumentParser:
-    """Get argument parser.
-
-    Returns:
-        ArgumentParser: Argument parser.
-    """
-
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--path_to_config",
-        type=str,
-        required=True,
-        help="Path to config",
-    )
-
-    return parser
-
+from .utils import get_argparse
 
 if __name__ == "__main__":
 
