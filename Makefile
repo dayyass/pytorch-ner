@@ -1,5 +1,5 @@
 all:
-	python main.py --config config.yaml
+	python -m pytorch_ner --path_to_config config.yaml
 coverage:
 	coverage run -m unittest discover && coverage report -m
 docker_build:
