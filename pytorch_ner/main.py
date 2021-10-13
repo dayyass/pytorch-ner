@@ -1,5 +1,4 @@
 import os
-from argparse import ArgumentParser
 from collections import Counter
 
 import torch
@@ -18,11 +17,12 @@ from pytorch_ner.prepare_data import (
     prepare_conll_data_format,
 )
 from pytorch_ner.save import save_model
-from pytorch_ner.train import train
+from pytorch_ner.train import train as train_loop
 from pytorch_ner.utils import set_global_seed, str_to_class
 
 
-def main(path_to_config: str):
+def train(path_to_config: str):
+    """Main function to train NER model."""
 
     with open(path_to_config, mode="r") as fp:
         config = yaml.safe_load(fp)
@@ -202,7 +202,7 @@ def main(path_to_config: str):
 
     # TRAIN MODEL
 
-    train(
+    train_loop(
         model=model,
         trainloader=trainloader,
         valloader=valloader,
@@ -225,17 +225,3 @@ def main(path_to_config: str):
         config=config,
         export_onnx=config["save"]["export_onnx"],
     )
-
-
-if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--config",
-        type=str,
-        required=False,
-        default="config.yaml",
-        help="path to config",
-    )
-    args = parser.parse_args()
-
-    main(path_to_config=args.config)
