@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from typing import Callable, DefaultDict, List, Optional
 
@@ -156,23 +157,24 @@ def train_loop(
     n_epoch: int,
     verbose: bool = True,
     testloader: Optional[DataLoader] = None,
+    logger: logging.Logger = None,
 ):
     """
     Training / validation loop for n_epoch with final testing.
     """
 
     # sanity check
-    print("sanity check")
+    logger.info("Sanity Check starting...")
     tokens, _, lengths = next(iter(valloader))
     tokens, lengths = tokens.to(device), lengths.to(device)
     with torch.no_grad():
         _ = model(tokens, lengths)
-    print()
+    logger.info("Sanity Check passed!\n")
 
     for epoch in range(n_epoch):
 
         if verbose:
-            print(f"epoch [{epoch+1}/{n_epoch}]\n")
+            logger.info(f"epoch [{epoch+1}/{n_epoch}]\n")
 
         train_metrics = train_epoch(
             model=model,
@@ -186,8 +188,8 @@ def train_loop(
 
         if verbose:
             for metric_name, metric_list in train_metrics.items():
-                print(f"train {metric_name}: {np.mean(metric_list)}")
-            print()
+                logger.info(f"train {metric_name}: {np.mean(metric_list)}")
+            logger.info("\n")
 
         val_metrics = validate_epoch(
             model=model,
@@ -199,8 +201,8 @@ def train_loop(
 
         if verbose:
             for metric_name, metric_list in val_metrics.items():
-                print(f"val {metric_name}: {np.mean(metric_list)}")
-            print()
+                logger.info(f"val {metric_name}: {np.mean(metric_list)}")
+            logger.info("\n")
 
     if testloader is not None:
 
@@ -214,5 +216,5 @@ def train_loop(
 
         if verbose:
             for metric_name, metric_list in test_metrics.items():
-                print(f"test {metric_name}: {np.mean(metric_list)}")
-            print()
+                logger.info(f"test {metric_name}: {np.mean(metric_list)}")
+            logger.info("\n")
