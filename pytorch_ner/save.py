@@ -1,5 +1,6 @@
+import datetime
 import json
-import os
+from pathlib import Path
 from typing import Dict
 
 import torch
@@ -7,7 +8,6 @@ import torch.nn as nn
 import yaml
 
 from pytorch_ner.onnx import onnx_export_and_check
-from pytorch_ner.utils import mkdir
 
 
 def save_model(
@@ -18,31 +18,32 @@ def save_model(
     config: Dict,
     export_onnx: bool = False,
 ):
-    # check existence of save path_to_folder
-    if os.path.exists(path_to_folder):
-        raise FileExistsError("save directory already exists")
-    mkdir(path_to_folder)
 
-    model.cpu()
-    model.eval()
+    path_to_save = (
+        Path(path_to_folder)
+        / f"model_{datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}"
+    )
+
+    # mkdir if not exists
+    path_to_save.absolute().mkdir(parents=True, exist_ok=True)
 
     # save torch model
-    torch.save(model.state_dict(), os.path.join(path_to_folder, "model.pth"))
+    model.cpu()
+    model.eval()
+    torch.save(model.state_dict(), path_to_save / "model.pth")
 
     # save token2idx
-    with open(file=os.path.join(path_to_folder, "token2idx.json"), mode="w") as fp:
+    with open(file=path_to_save / "token2idx.json", mode="w") as fp:
         json.dump(token2idx, fp)
 
     # save label2idx
-    with open(file=os.path.join(path_to_folder, "label2idx.json"), mode="w") as fp:
+    with open(file=path_to_save / "label2idx.json", mode="w") as fp:
         json.dump(label2idx, fp)
 
     # save config
-    with open(file=os.path.join(path_to_folder, "config.yaml"), mode="w") as fp:
+    with open(file=path_to_save / "config.yaml", mode="w") as fp:
         yaml.dump(config, fp)
 
     # save onnx model
     if export_onnx:
-        onnx_export_and_check(
-            model=model, path_to_save=os.path.join(path_to_folder, "model.onnx")
-        )
+        onnx_export_and_check(model=model, path_to_save=path_to_save / "model.onnx")  # type: ignore
