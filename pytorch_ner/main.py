@@ -159,10 +159,11 @@ def _train(
     )
 
     rnn_layer = DynamicRNN(
-        rnn_unit=eval(config["model"]["rnn"]["rnn_unit"]),  # TODO: fix eval
-        input_size=config["model"]["embedding"][
-            "embedding_dim"
-        ],  # reference to embedding_dim
+        rnn_unit=str_to_class(
+            module_name="torch.nn",
+            class_name=config["model"]["rnn"]["rnn_unit"],
+        ),
+        input_size=config["model"]["embedding"]["embedding_dim"],  # ref to emb_dim
         hidden_size=config["model"]["rnn"]["hidden_size"],
         num_layers=config["model"]["rnn"]["num_layers"],
         dropout=config["model"]["rnn"]["dropout"],

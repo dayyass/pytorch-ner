@@ -34,14 +34,14 @@ model:
   embedding:
     embedding_dim: 128
   rnn:
-    rnn_unit: nn.LSTM
+    rnn_unit: LSTM  # GRU, RNN
     hidden_size: 256
     num_layers: 1
     dropout: 0
     bidirectional: true
 
 optimizer:
-  optimizer_type: Adam
+  optimizer_type: Adam  # torch.optim
   clip_grad_norm: 0.1
   params:
     lr: 0.001
