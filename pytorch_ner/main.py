@@ -76,7 +76,7 @@ def _train(
 
     # datasets
 
-    trainset = NERDataset(
+    train_set = NERDataset(
         token_seq=train_token_seq,
         label_seq=train_label_seq,
         token2idx=token2idx,
@@ -84,7 +84,7 @@ def _train(
         preprocess=config["dataloader"]["preprocess"],
     )
 
-    validset = NERDataset(
+    valid_set = NERDataset(
         token_seq=valid_token_seq,
         label_seq=valid_label_seq,
         token2idx=token2idx,
@@ -93,7 +93,7 @@ def _train(
     )
 
     if "test_data" in config["prepare_data"]:
-        testset = NERDataset(
+        test_set = NERDataset(
             token_seq=test_token_seq,
             label_seq=test_label_seq,
             token2idx=token2idx,
@@ -125,23 +125,23 @@ def _train(
     # dataloaders
 
     # TODO: add more params to config.yaml
-    trainloader = DataLoader(
-        dataset=trainset,
+    train_loader = DataLoader(
+        dataset=train_set,
         batch_size=config["dataloader"]["batch_size"],
         shuffle=True,  # hardcoded
         collate_fn=train_collator,
     )
 
-    validloader = DataLoader(
-        dataset=validset,
+    valid_loader = DataLoader(
+        dataset=valid_set,
         batch_size=1,  # hardcoded
         shuffle=False,  # hardcoded
         collate_fn=valid_collator,
     )
 
     if "test_data" in config["prepare_data"]:
-        testloader = DataLoader(
-            dataset=testset,
+        test_loader = DataLoader(
+            dataset=test_set,
             batch_size=1,  # hardcoded
             shuffle=False,  # hardcoded
             collate_fn=test_collator,
@@ -205,9 +205,9 @@ def _train(
 
     train_loop(
         model=model,
-        trainloader=trainloader,
-        validloader=validloader,
-        testloader=testloader if "test_data" in config["prepare_data"] else None,
+        trainloader=train_loader,
+        validloader=valid_loader,
+        testloader=test_loader if "test_data" in config["prepare_data"] else None,
         criterion=criterion,
         optimizer=optimizer,
         device=device,
