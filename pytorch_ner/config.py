@@ -19,11 +19,13 @@ def get_config(path_to_config: str) -> Dict[str, Any]:
         config = yaml.safe_load(fp)
 
     config["save"]["path_to_folder"] = (
-        Path(config["save"])
+        Path(config["save"]["path_to_folder"])
         / f"model_{datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}"
     )
 
     # mkdir if not exists
     config["save"]["path_to_folder"].absolute().mkdir(parents=True, exist_ok=True)
+
+    config["save"]["path_to_config"] = path_to_config
 
     return config

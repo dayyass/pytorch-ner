@@ -1,5 +1,4 @@
 import logging
-import os
 from collections import Counter
 from typing import Any, Dict
 
@@ -28,9 +27,9 @@ def _train(
 ) -> None:
     """Main function to train NER model."""
 
-    # check existence of save path_to_folder
-    if os.path.exists(config["save"]["path_to_folder"]):
-        raise FileExistsError("save directory already exists")
+    # log config
+    with open(config["save"]["path_to_config"], mode="r") as fp:
+        logger.info(f"Config:\n\n{fp.read()}")
 
     device = torch.device(config["torch"]["device"])
     set_global_seed(config["torch"]["seed"])
