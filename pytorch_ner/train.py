@@ -155,9 +155,9 @@ def train_loop(
     device: torch.device,
     clip_grad_norm: float,
     n_epoch: int,
+    logger: logging.Logger,
     verbose: bool = True,
     testloader: Optional[DataLoader] = None,
-    logger: logging.Logger = None,
 ):
     """
     Training / validation loop for n_epoch with final testing.
