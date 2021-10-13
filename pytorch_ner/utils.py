@@ -5,11 +5,10 @@ import random
 import shutil
 import sys
 from argparse import ArgumentParser
-from typing import Any, Dict, Optional
+from typing import Optional
 
 import numpy as np
 import torch
-import yaml
 
 
 def set_global_seed(seed: int):
@@ -82,22 +81,6 @@ def get_argparse() -> ArgumentParser:
     )
 
     return parser
-
-
-def get_config(path_to_config: str) -> Dict[str, Any]:
-    """Get config.
-
-    Args:
-        path_to_config (str): Path to config.
-
-    Returns:
-        Dict[str, Any]: Config.
-    """
-
-    with open(path_to_config, mode="r") as fp:
-        config = yaml.safe_load(fp)
-
-    return config
 
 
 def get_logger(path_to_logfile: Optional[str] = None) -> logging.Logger:

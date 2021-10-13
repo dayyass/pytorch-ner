@@ -1,7 +1,8 @@
 import traceback
 
+from .config import get_config
 from .main import _train
-from .utils import close_logger, get_argparse, get_config, get_logger
+from .utils import close_logger, get_argparse, get_logger
 
 
 def train(path_to_config: str) -> None:
