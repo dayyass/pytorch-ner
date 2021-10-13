@@ -53,5 +53,5 @@ train:
   verbose: true
 
 save:
-  path_to_folder: 'models/test_main/'
+  path_to_folder: 'models/'
   export_onnx: true
