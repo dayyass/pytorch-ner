@@ -17,7 +17,7 @@ def train(path_to_config: str) -> None:
     config = get_config(path_to_config=path_to_config)
 
     # get logger
-    logger = get_logger()  # TODO: add path to save
+    logger = get_logger(path_to_logfile=config["save"]["path_to_save_logfile"])
 
     try:
         _train(

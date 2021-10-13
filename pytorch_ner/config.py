@@ -27,5 +27,8 @@ def get_config(path_to_config: str) -> Dict[str, Any]:
     config["save"]["path_to_folder"].absolute().mkdir(parents=True, exist_ok=True)
 
     config["save"]["path_to_config"] = path_to_config
+    config["save"]["path_to_save_logfile"] = (
+        config["save"]["path_to_folder"] / "logging.txt"
+    )
 
     return config

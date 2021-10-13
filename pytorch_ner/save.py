@@ -1,10 +1,10 @@
 import json
+import shutil
 from pathlib import Path
 from typing import Dict
 
 import torch
 import torch.nn as nn
-import yaml
 
 from pytorch_ner.onnx import onnx_export_and_check
 
@@ -34,8 +34,7 @@ def save_model(
         json.dump(label2idx, fp)
 
     # save config
-    with open(file=path_to_save / "config.yaml", mode="w") as fp:
-        yaml.dump(config, fp)
+    shutil.copy2(config["save"]["path_to_config"], path_to_save / "config.yaml")
 
     # save onnx model
     if export_onnx:
