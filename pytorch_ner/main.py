@@ -1,9 +1,10 @@
+import logging
 import os
 from collections import Counter
+from typing import Any, Dict
 
 import torch
 import torch.nn as nn
-import yaml
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
@@ -21,11 +22,11 @@ from pytorch_ner.train import train_loop
 from pytorch_ner.utils import set_global_seed, str_to_class
 
 
-def _train(path_to_config: str):
+def _train(
+    config: Dict[str, Any],
+    logger: logging.Logger,
+) -> None:
     """Main function to train NER model."""
-
-    with open(path_to_config, mode="r") as fp:
-        config = yaml.safe_load(fp)
 
     # check existence of save path_to_folder
     if os.path.exists(config["save"]["path_to_folder"]):
@@ -213,6 +214,7 @@ def _train(path_to_config: str):
         clip_grad_norm=config["optimizer"]["clip_grad_norm"],
         n_epoch=config["train"]["n_epoch"],
         verbose=config["train"]["verbose"],
+        logger=logger,
     )
 
     # SAVE MODEL
