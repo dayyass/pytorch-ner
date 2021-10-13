@@ -72,7 +72,7 @@ metrics_before = validate_epoch(
 train_loop(
     model=model,
     trainloader=dataloader,
-    valloader=dataloader,
+    validloader=dataloader,
     testloader=dataloader,
     criterion=criterion,
     optimizer=optimizer,
@@ -85,7 +85,7 @@ train_loop(
 
 
 class TestTrain(unittest.TestCase):
-    def test_val_metrics(self):
+    def test_valid_metrics(self):
 
         metrics_after = validate_epoch(
             model=model.to(device),

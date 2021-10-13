@@ -8,8 +8,8 @@ prepare_data:
     sep: ' '
     lower: true
     verbose: true
-  val_data:
-    path: 'data/conll2003/val.txt'
+  valid_data:
+    path: 'data/conll2003/valid.txt'
     sep: ' '
     lower: true
     verbose: true

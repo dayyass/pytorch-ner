@@ -45,11 +45,11 @@ def _train(
         verbose=config["prepare_data"]["train_data"]["verbose"],
     )
 
-    val_token_seq, val_label_seq = prepare_conll_data_format(
-        path=config["prepare_data"]["val_data"]["path"],
-        sep=config["prepare_data"]["val_data"]["sep"],
-        lower=config["prepare_data"]["val_data"]["lower"],
-        verbose=config["prepare_data"]["val_data"]["verbose"],
+    valid_token_seq, valid_label_seq = prepare_conll_data_format(
+        path=config["prepare_data"]["valid_data"]["path"],
+        sep=config["prepare_data"]["valid_data"]["sep"],
+        lower=config["prepare_data"]["valid_data"]["lower"],
+        verbose=config["prepare_data"]["valid_data"]["verbose"],
     )
 
     if "test_data" in config["prepare_data"]:
@@ -84,9 +84,9 @@ def _train(
         preprocess=config["dataloader"]["preprocess"],
     )
 
-    valset = NERDataset(
-        token_seq=val_token_seq,
-        label_seq=val_label_seq,
+    validset = NERDataset(
+        token_seq=valid_token_seq,
+        label_seq=valid_label_seq,
         token2idx=token2idx,
         label2idx=label2idx,
         preprocess=config["dataloader"]["preprocess"],
@@ -109,7 +109,7 @@ def _train(
         percentile=config["dataloader"]["percentile"],
     )
 
-    val_collator = NERCollator(
+    valid_collator = NERCollator(
         token_padding_value=token2idx[config["dataloader"]["token_padding"]],
         label_padding_value=label2idx[config["dataloader"]["label_padding"]],
         percentile=100,  # hardcoded
@@ -132,11 +132,11 @@ def _train(
         collate_fn=train_collator,
     )
 
-    valloader = DataLoader(
-        dataset=valset,
+    validloader = DataLoader(
+        dataset=validset,
         batch_size=1,  # hardcoded
         shuffle=False,  # hardcoded
-        collate_fn=val_collator,
+        collate_fn=valid_collator,
     )
 
     if "test_data" in config["prepare_data"]:
@@ -206,7 +206,7 @@ def _train(
     train_loop(
         model=model,
         trainloader=trainloader,
-        valloader=valloader,
+        validloader=validloader,
         testloader=testloader if "test_data" in config["prepare_data"] else None,
         criterion=criterion,
         optimizer=optimizer,

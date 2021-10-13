@@ -149,7 +149,7 @@ def validate_epoch(
 def train_loop(
     model: nn.Module,
     trainloader: DataLoader,
-    valloader: DataLoader,
+    validloader: DataLoader,
     criterion: Callable,
     optimizer: optim.Optimizer,
     device: torch.device,
@@ -165,7 +165,7 @@ def train_loop(
 
     # sanity check
     logger.info("Sanity Check starting...")
-    tokens, _, lengths = next(iter(valloader))
+    tokens, _, lengths = next(iter(validloader))
     tokens, lengths = tokens.to(device), lengths.to(device)
     with torch.no_grad():
         _ = model(tokens, lengths)
@@ -191,17 +191,17 @@ def train_loop(
                 logger.info(f"train {metric_name}: {np.mean(metric_list)}")
             logger.info("\n")
 
-        val_metrics = validate_epoch(
+        valid_metrics = validate_epoch(
             model=model,
-            dataloader=valloader,
+            dataloader=validloader,
             criterion=criterion,
             device=device,
             verbose=verbose,
         )
 
         if verbose:
-            for metric_name, metric_list in val_metrics.items():
-                logger.info(f"val {metric_name}: {np.mean(metric_list)}")
+            for metric_name, metric_list in valid_metrics.items():
+                logger.info(f"valid {metric_name}: {np.mean(metric_list)}")
             logger.info("\n")
 
     if testloader is not None:
