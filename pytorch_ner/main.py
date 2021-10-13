@@ -17,11 +17,11 @@ from pytorch_ner.prepare_data import (
     prepare_conll_data_format,
 )
 from pytorch_ner.save import save_model
-from pytorch_ner.train import train as train_loop
+from pytorch_ner.train import train_loop
 from pytorch_ner.utils import set_global_seed, str_to_class
 
 
-def train(path_to_config: str):
+def _train(path_to_config: str):
     """Main function to train NER model."""
 
     with open(path_to_config, mode="r") as fp:

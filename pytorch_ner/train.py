@@ -145,7 +145,7 @@ def validate_epoch(
 # TODO: add TensorBoard support
 # TODO: add EarlyStopping support
 # TODO: add ModelCheckpoint support
-def train(
+def train_loop(
     model: nn.Module,
     trainloader: DataLoader,
     valloader: DataLoader,

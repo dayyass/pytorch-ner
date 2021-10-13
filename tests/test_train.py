@@ -13,7 +13,7 @@ from pytorch_ner.prepare_data import (
     get_token2idx,
     prepare_conll_data_format,
 )
-from pytorch_ner.train import train, validate_epoch
+from pytorch_ner.train import train_loop, validate_epoch
 from tests.test_nn_modules.test_architecture import model_bilstm as model
 
 device = torch.device("cpu")
@@ -66,7 +66,7 @@ metrics_before = validate_epoch(
 
 # TRAIN MODEL
 
-train(
+train_loop(
     model=model,
     trainloader=dataloader,
     valloader=dataloader,

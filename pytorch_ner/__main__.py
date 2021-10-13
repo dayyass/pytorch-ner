@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 
-from .main import train
+from .main import _train
 
 
 def get_argparse() -> ArgumentParser:
@@ -27,4 +27,4 @@ if __name__ == "__main__":
     parser = get_argparse()
     args = parser.parse_args()
 
-    train(path_to_config=args.path_to_config)
+    _train(path_to_config=args.path_to_config)
