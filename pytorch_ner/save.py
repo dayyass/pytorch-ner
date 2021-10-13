@@ -1,4 +1,3 @@
-import datetime
 import json
 from pathlib import Path
 from typing import Dict
@@ -19,13 +18,7 @@ def save_model(
     export_onnx: bool = False,
 ):
 
-    path_to_save = (
-        Path(path_to_folder)
-        / f"model_{datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}"
-    )
-
-    # mkdir if not exists
-    path_to_save.absolute().mkdir(parents=True, exist_ok=True)
+    path_to_save = Path(path_to_folder)
 
     # save torch model
     model.cpu()
