@@ -46,4 +46,7 @@ def save_model(
 
     # save onnx model
     if export_onnx:
-        onnx_export_and_check(model=model, path_to_save=path_to_save / "model.onnx")  # type: ignore
+        onnx_export_and_check(
+            model=model,
+            path_to_save=str(path_to_save / "model.onnx"),
+        )  # type: ignore
