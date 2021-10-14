@@ -71,9 +71,9 @@ metrics_before = validate_epoch(
 
 train_loop(
     model=model,
-    trainloader=dataloader,
-    validloader=dataloader,
-    testloader=dataloader,
+    train_loader=dataloader,
+    valid_loader=dataloader,
+    test_loader=dataloader,
     criterion=criterion,
     optimizer=optimizer,
     device=device,

@@ -148,8 +148,8 @@ def validate_epoch(
 # TODO: add ModelCheckpoint support
 def train_loop(
     model: nn.Module,
-    trainloader: DataLoader,
-    validloader: DataLoader,
+    train_loader: DataLoader,
+    valid_loader: DataLoader,
     criterion: Callable,
     optimizer: optim.Optimizer,
     device: torch.device,
@@ -157,7 +157,7 @@ def train_loop(
     n_epoch: int,
     logger: logging.Logger,
     verbose: bool = True,
-    testloader: Optional[DataLoader] = None,
+    test_loader: Optional[DataLoader] = None,
 ):
     """
     Training / validation loop for n_epoch with final testing.
@@ -165,7 +165,7 @@ def train_loop(
 
     # sanity check
     logger.info("Sanity Check starting...")
-    tokens, _, lengths = next(iter(validloader))
+    tokens, _, lengths = next(iter(valid_loader))
     tokens, lengths = tokens.to(device), lengths.to(device)
     with torch.no_grad():
         _ = model(tokens, lengths)
@@ -178,7 +178,7 @@ def train_loop(
 
         train_metrics = train_epoch(
             model=model,
-            dataloader=trainloader,
+            dataloader=train_loader,
             criterion=criterion,
             optimizer=optimizer,
             device=device,
@@ -193,7 +193,7 @@ def train_loop(
 
         valid_metrics = validate_epoch(
             model=model,
-            dataloader=validloader,
+            dataloader=valid_loader,
             criterion=criterion,
             device=device,
             verbose=verbose,
@@ -204,11 +204,11 @@ def train_loop(
                 logger.info(f"valid {metric_name}: {np.mean(metric_list)}")
             logger.info("\n")
 
-    if testloader is not None:
+    if test_loader is not None:
 
         test_metrics = validate_epoch(
             model=model,
-            dataloader=testloader,
+            dataloader=test_loader,
             criterion=criterion,
             device=device,
             verbose=verbose,

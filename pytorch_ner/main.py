@@ -205,9 +205,9 @@ def _train(
 
     train_loop(
         model=model,
-        trainloader=train_loader,
-        validloader=valid_loader,
-        testloader=test_loader if "test_data" in config["prepare_data"] else None,
+        train_loader=train_loader,
+        valid_loader=valid_loader,
+        test_loader=test_loader if "test_data" in config["prepare_data"] else None,
         criterion=criterion,
         optimizer=optimizer,
         device=device,
