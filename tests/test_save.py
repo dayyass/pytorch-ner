@@ -12,6 +12,9 @@ path_to_save_folder = Path("models/test")
 path_to_no_onnx_folder = path_to_save_folder / "no_onnx"
 path_to_onnx_folder = path_to_save_folder / "onnx"
 
+path_to_no_onnx_folder.absolute().mkdir(parents=True, exist_ok=True)
+path_to_onnx_folder.absolute().mkdir(parents=True, exist_ok=True)
+
 
 path_to_config = "config.yaml"
 
@@ -20,40 +23,34 @@ with open(path_to_config, mode="r") as fp:
     config["save"]["path_to_config"] = path_to_config
 
 
-class TestSave(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        path_to_no_onnx_folder.absolute().mkdir(parents=True, exist_ok=True)
-        path_to_onnx_folder.absolute().mkdir(parents=True, exist_ok=True)
+# without onnx
+save_model(
+    path_to_folder=str(path_to_no_onnx_folder),
+    model=model,
+    token2idx=token2idx,
+    label2idx=label2idx,
+    config=config,
+    export_onnx=False,
+)
 
+# with onnx
+save_model(
+    path_to_folder=str(path_to_onnx_folder),
+    model=model,
+    token2idx=token2idx,
+    label2idx=label2idx,
+    config=config,
+    export_onnx=True,
+)
+
+
+class TestSave(unittest.TestCase):
     def test_num_files(self):
         """Check 4 files"""
-
-        # without onnx
-        save_model(
-            path_to_folder=str(path_to_no_onnx_folder),
-            model=model,
-            token2idx=token2idx,
-            label2idx=label2idx,
-            config=config,
-            export_onnx=False,
-        )
-
         self.assertTrue(len(os.listdir(path_to_no_onnx_folder)) == 4)
 
     def test_num_files_with_onnx(self):
         """Check 5 files"""
-
-        # with onnx
-        save_model(
-            path_to_folder=str(path_to_onnx_folder),
-            model=model,
-            token2idx=token2idx,
-            label2idx=label2idx,
-            config=config,
-            export_onnx=True,
-        )
-
         self.assertTrue(len(os.listdir(path_to_onnx_folder)) == 5)
 
     @classmethod
