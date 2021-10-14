@@ -1,0 +1,52 @@
+torch:
+  device: 'cpu'
+  seed: 42
+
+prepare_data:
+  train_data:
+    path: 'tests/data/conll.txt'
+    sep: ' '
+    lower: true
+    verbose: true
+  valid_data:
+    path: 'tests/data/conll.txt'
+    sep: ' '
+    lower: true
+    verbose: true
+  token2idx:
+    min_count: 1
+    add_pad: true
+    add_unk: true
+
+dataloader:
+  preprocess: true
+  token_padding: '<PAD>'
+  label_padding: 'O'
+  percentile: 100
+  batch_size: 256
+
+model:
+  embedding:
+    embedding_dim: 128
+  rnn:
+    rnn_unit: LSTM  # GRU, RNN
+    hidden_size: 256
+    num_layers: 1
+    dropout: 0
+    bidirectional: true
+
+optimizer:
+  optimizer_type: Adam  # torch.optim
+  clip_grad_norm: 0.1
+  params:
+    lr: 0.001
+    weight_decay: 0
+    amsgrad: false
+
+train:
+  n_epoch: 10
+  verbose: true
+
+save:
+  path_to_folder: 'models'
+  export_onnx: true
