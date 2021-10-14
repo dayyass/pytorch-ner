@@ -1,10 +1,9 @@
-import os
-from argparse import ArgumentParser
+import logging
 from collections import Counter
+from typing import Any, Dict
 
 import torch
 import torch.nn as nn
-import yaml
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
@@ -18,18 +17,19 @@ from pytorch_ner.prepare_data import (
     prepare_conll_data_format,
 )
 from pytorch_ner.save import save_model
-from pytorch_ner.train import train
+from pytorch_ner.train import train_loop
 from pytorch_ner.utils import set_global_seed, str_to_class
 
 
-def main(path_to_config: str):
+def _train(
+    config: Dict[str, Any],
+    logger: logging.Logger,
+) -> None:
+    """Main function to train NER model."""
 
-    with open(path_to_config, mode="r") as fp:
-        config = yaml.safe_load(fp)
-
-    # check existence of save path_to_folder
-    if os.path.exists(config["save"]["path_to_folder"]):
-        raise FileExistsError("save directory already exists")
+    # log config
+    with open(config["save"]["path_to_config"], mode="r") as fp:
+        logger.info(f"Config:\n\n{fp.read()}")
 
     device = torch.device(config["torch"]["device"])
     set_global_seed(config["torch"]["seed"])
@@ -45,11 +45,11 @@ def main(path_to_config: str):
         verbose=config["prepare_data"]["train_data"]["verbose"],
     )
 
-    val_token_seq, val_label_seq = prepare_conll_data_format(
-        path=config["prepare_data"]["val_data"]["path"],
-        sep=config["prepare_data"]["val_data"]["sep"],
-        lower=config["prepare_data"]["val_data"]["lower"],
-        verbose=config["prepare_data"]["val_data"]["verbose"],
+    valid_token_seq, valid_label_seq = prepare_conll_data_format(
+        path=config["prepare_data"]["valid_data"]["path"],
+        sep=config["prepare_data"]["valid_data"]["sep"],
+        lower=config["prepare_data"]["valid_data"]["lower"],
+        verbose=config["prepare_data"]["valid_data"]["verbose"],
     )
 
     if "test_data" in config["prepare_data"]:
@@ -76,7 +76,7 @@ def main(path_to_config: str):
 
     # datasets
 
-    trainset = NERDataset(
+    train_set = NERDataset(
         token_seq=train_token_seq,
         label_seq=train_label_seq,
         token2idx=token2idx,
@@ -84,16 +84,16 @@ def main(path_to_config: str):
         preprocess=config["dataloader"]["preprocess"],
     )
 
-    valset = NERDataset(
-        token_seq=val_token_seq,
-        label_seq=val_label_seq,
+    valid_set = NERDataset(
+        token_seq=valid_token_seq,
+        label_seq=valid_label_seq,
         token2idx=token2idx,
         label2idx=label2idx,
         preprocess=config["dataloader"]["preprocess"],
     )
 
     if "test_data" in config["prepare_data"]:
-        testset = NERDataset(
+        test_set = NERDataset(
             token_seq=test_token_seq,
             label_seq=test_label_seq,
             token2idx=token2idx,
@@ -109,7 +109,7 @@ def main(path_to_config: str):
         percentile=config["dataloader"]["percentile"],
     )
 
-    val_collator = NERCollator(
+    valid_collator = NERCollator(
         token_padding_value=token2idx[config["dataloader"]["token_padding"]],
         label_padding_value=label2idx[config["dataloader"]["label_padding"]],
         percentile=100,  # hardcoded
@@ -125,23 +125,23 @@ def main(path_to_config: str):
     # dataloaders
 
     # TODO: add more params to config.yaml
-    trainloader = DataLoader(
-        dataset=trainset,
+    train_loader = DataLoader(
+        dataset=train_set,
         batch_size=config["dataloader"]["batch_size"],
         shuffle=True,  # hardcoded
         collate_fn=train_collator,
     )
 
-    valloader = DataLoader(
-        dataset=valset,
+    valid_loader = DataLoader(
+        dataset=valid_set,
         batch_size=1,  # hardcoded
         shuffle=False,  # hardcoded
-        collate_fn=val_collator,
+        collate_fn=valid_collator,
     )
 
     if "test_data" in config["prepare_data"]:
-        testloader = DataLoader(
-            dataset=testset,
+        test_loader = DataLoader(
+            dataset=test_set,
             batch_size=1,  # hardcoded
             shuffle=False,  # hardcoded
             collate_fn=test_collator,
@@ -158,10 +158,11 @@ def main(path_to_config: str):
     )
 
     rnn_layer = DynamicRNN(
-        rnn_unit=eval(config["model"]["rnn"]["rnn_unit"]),  # TODO: fix eval
-        input_size=config["model"]["embedding"][
-            "embedding_dim"
-        ],  # reference to embedding_dim
+        rnn_unit=str_to_class(
+            module_name="torch.nn",
+            class_name=config["model"]["rnn"]["rnn_unit"],
+        ),
+        input_size=config["model"]["embedding"]["embedding_dim"],  # ref to emb_dim
         hidden_size=config["model"]["rnn"]["hidden_size"],
         num_layers=config["model"]["rnn"]["num_layers"],
         dropout=config["model"]["rnn"]["dropout"],
@@ -202,17 +203,18 @@ def main(path_to_config: str):
 
     # TRAIN MODEL
 
-    train(
+    train_loop(
         model=model,
-        trainloader=trainloader,
-        valloader=valloader,
-        testloader=testloader if "test_data" in config["prepare_data"] else None,
+        train_loader=train_loader,
+        valid_loader=valid_loader,
+        test_loader=test_loader if "test_data" in config["prepare_data"] else None,
         criterion=criterion,
         optimizer=optimizer,
         device=device,
         clip_grad_norm=config["optimizer"]["clip_grad_norm"],
         n_epoch=config["train"]["n_epoch"],
         verbose=config["train"]["verbose"],
+        logger=logger,
     )
 
     # SAVE MODEL
@@ -225,17 +227,3 @@ def main(path_to_config: str):
         config=config,
         export_onnx=config["save"]["export_onnx"],
     )
-
-
-if __name__ == "__main__":
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--config",
-        type=str,
-        required=False,
-        default="config.yaml",
-        help="path to config",
-    )
-    args = parser.parse_args()
-
-    main(path_to_config=args.config)

@@ -4,17 +4,17 @@ torch:
 
 prepare_data:
   train_data:
-    path: 'data/conll2003/train.txt'
+    path: 'tests/data/conll.txt'
     sep: ' '
     lower: true
     verbose: true
   valid_data:
-    path: 'data/conll2003/valid.txt'
+    path: 'tests/data/conll.txt'
     sep: ' '
     lower: true
     verbose: true
   test_data:
-    path: 'data/conll2003/test.txt'
+    path: 'tests/data/conll.txt'
     sep: ' '
     lower: true
     verbose: true

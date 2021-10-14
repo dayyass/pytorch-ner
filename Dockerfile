@@ -1,11 +1,12 @@
-FROM pytorch/pytorch:1.6.0-cuda10.1-cudnn7-runtime
+FROM python:3.7-slim-buster
 MAINTAINER Dani El-Ayyass <dayyass@yandex.ru>
 
-COPY requirements.txt .
+WORKDIR /workdir
 
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+COPY config.yaml ./
+COPY data/conll2003/* data/conll2003/
 
-EXPOSE 6006
-VOLUME /workspace
-WORKDIR /workspace
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir pytorch-ner
+
+CMD ["bash"]

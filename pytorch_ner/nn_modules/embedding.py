@@ -81,8 +81,8 @@ def fasttext2word2vec(
     add_pad: bool = True,
 ) -> Tuple[Dict[str, int], np.ndarray]:
     """
-    Represent train/val/test tokens as fasttext word embeddings (like word2vec) to use with nn.Embeddings.
-    There is no <UNK> token, since all train/val/test tokens have embedding representation.
+    Represent train/valid/test tokens as fasttext word embeddings (like word2vec) to use with nn.Embeddings.
+    There is no <UNK> token, since all train/valid/test tokens have embedding representation.
     Not suitable for inference (use gensim fasttext model).
     """
 
