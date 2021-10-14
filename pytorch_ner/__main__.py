@@ -1,9 +1,27 @@
 import traceback
+from argparse import ArgumentParser
 
 from .config import get_config
 from .logger import close_logger, get_logger
 from .main import _train
-from .utils import get_argparse
+
+
+def get_argparse() -> ArgumentParser:
+    """Get argument parser.
+
+    Returns:
+        ArgumentParser: Argument parser.
+    """
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--path_to_config",
+        type=str,
+        required=True,
+        help="Path to config",
+    )
+
+    return parser
 
 
 def train(path_to_config: str) -> None:

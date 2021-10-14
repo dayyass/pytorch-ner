@@ -2,7 +2,6 @@ import importlib
 import os
 import random
 import shutil
-from argparse import ArgumentParser
 
 import numpy as np
 import torch
@@ -31,15 +30,6 @@ def to_numpy(tensor: torch.Tensor) -> np.ndarray:
     )
 
 
-def mkdir(path: str):
-    """
-    Make directory if not exists.
-    """
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-
 def rmdir(path: str):
     """
     Remove directory if exists.
@@ -60,21 +50,3 @@ def str_to_class(module_name, class_name):
     # get the class, will raise AttributeError if class cannot be found
     cls = getattr(module, class_name)
     return cls
-
-
-def get_argparse() -> ArgumentParser:
-    """Get argument parser.
-
-    Returns:
-        ArgumentParser: Argument parser.
-    """
-
-    parser = ArgumentParser()
-    parser.add_argument(
-        "--path_to_config",
-        type=str,
-        required=True,
-        help="Path to config",
-    )
-
-    return parser
