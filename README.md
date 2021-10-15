@@ -107,7 +107,7 @@ save:
 ```
 
 #### Data Format
-Text file containing separated tokens and labels on each line. Sentences are separated by empty line.
+Pipeline works with text file containing separated tokens and labels on each line. Sentences are separated by empty line.
 Labels should already be in necessary format, e.g. IO, BIO, BILUO, ...
 
 Example:
@@ -143,7 +143,7 @@ List of implemented models:
 - [ ] BiLTSMCNNAttnCRF
 
 ### Evaluation
-All results are obtained on CoNLL-2003 dataset. We didn't search the best parameters.
+All results are obtained on CoNLL-2003 [dataset](https://github.com/dayyass/pytorch-ner/tree/develop/data/conll2003). We didn't search the best parameters.
 
 | Model  | Train F1-weighted | Validation F1-weighted | Test F1-weighted |
 | ------ | ----------------- | ---------------------- | ---------------- |
