@@ -1,0 +1,17 @@
+[run]
+branch = True
+source = pytorch_ner
+
+[report]
+exclude_lines =
+    pragma: no cover
+    if self\.debug
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+
+omit =
+    pytorch_ner/__main__.py
+
+show_missing = True
+ignore_errors = False

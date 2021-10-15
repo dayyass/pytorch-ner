@@ -30,8 +30,8 @@ class NERDataset(Dataset):
             self.token_seq = [process_tokens(tokens, token2idx) for tokens in token_seq]
             self.label_seq = [process_labels(labels, label2idx) for labels in label_seq]
         else:
-            self.token_seq = token_seq
-            self.label_seq = label_seq
+            self.token_seq = token_seq  # type: ignore
+            self.label_seq = label_seq  # type: ignore
 
     def __len__(self):
         return len(self.token_seq)
@@ -41,15 +41,15 @@ class NERDataset(Dataset):
             tokens = self.token_seq[idx]
             labels = self.label_seq[idx]
         else:
-            tokens = process_tokens(self.token_seq[idx], self.token2idx)
-            labels = process_labels(self.label_seq[idx], self.label2idx)
+            tokens = process_tokens(self.token_seq[idx], self.token2idx)  # type: ignore
+            labels = process_labels(self.label_seq[idx], self.label2idx)  # type: ignore
 
         lengths = [len(tokens)]
 
         return np.array(tokens), np.array(labels), np.array(lengths)
 
 
-class NERCollator(object):
+class NERCollator:
     """
     Collator that handles variable-size sentences.
     """
@@ -78,11 +78,12 @@ class NERCollator(object):
 
         lengths = torch.tensor(
             np.clip(lengths, a_min=0, a_max=max_len),
+            dtype=torch.long,
         ).squeeze(-1)
 
         for i in range(len(batch)):
-            tokens[i] = torch.tensor(tokens[i][:max_len])
-            labels[i] = torch.tensor(labels[i][:max_len])
+            tokens[i] = torch.tensor(tokens[i][:max_len], dtype=torch.long)
+            labels[i] = torch.tensor(labels[i][:max_len], dtype=torch.long)
 
         sorted_idx = torch.argsort(lengths, descending=True)
 

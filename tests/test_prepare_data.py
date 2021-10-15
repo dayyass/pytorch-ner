@@ -10,10 +10,10 @@ from pytorch_ner.prepare_data import (
 )
 
 token_seq, label_seq = prepare_conll_data_format(
-    path="tests/data/conll.txt", verbose=False
+    path="tests/data/conll.txt", sep=" ", verbose=False
 )
 token_seq_cased, label_seq_cased = prepare_conll_data_format(
-    path="tests/data/conll.txt", lower=False, verbose=False
+    path="tests/data/conll.txt", sep=" ", lower=False, verbose=False
 )
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])

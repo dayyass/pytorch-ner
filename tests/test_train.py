@@ -8,13 +8,16 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
+from pytorch_ner.logger import get_logger
 from pytorch_ner.prepare_data import (
     get_label2idx,
     get_token2idx,
     prepare_conll_data_format,
 )
-from pytorch_ner.train import train, validate_loop
+from pytorch_ner.train import train_loop, validate_epoch
 from tests.test_nn_modules.test_architecture import model_bilstm as model
+
+logger = get_logger()
 
 device = torch.device("cpu")
 
@@ -22,7 +25,7 @@ device = torch.device("cpu")
 # LOAD DATA
 
 token_seq, label_seq = prepare_conll_data_format(
-    path="tests/data/conll.txt", verbose=False
+    path="tests/data/conll.txt", sep=" ", verbose=False
 )
 
 token2cnt = Counter([token for sentence in token_seq for token in sentence])
@@ -55,7 +58,7 @@ optimizer = optim.Adam(model.parameters())
 
 # VALIDATE
 
-metrics_before = validate_loop(
+metrics_before = validate_epoch(
     model=model.to(device),
     dataloader=dataloader,
     criterion=criterion,
@@ -66,23 +69,25 @@ metrics_before = validate_loop(
 
 # TRAIN MODEL
 
-train(
+train_loop(
     model=model,
-    trainloader=dataloader,
-    valloader=dataloader,
-    testloader=dataloader,
+    train_loader=dataloader,
+    valid_loader=dataloader,
+    test_loader=dataloader,
     criterion=criterion,
     optimizer=optimizer,
     device=device,
+    clip_grad_norm=0.1,
     n_epoch=5,
     verbose=False,
+    logger=logger,
 )
 
 
 class TestTrain(unittest.TestCase):
-    def test_val_metrics(self):
+    def test_valid_metrics(self):
 
-        metrics_after = validate_loop(
+        metrics_after = validate_epoch(
             model=model.to(device),
             dataloader=dataloader,
             criterion=criterion,

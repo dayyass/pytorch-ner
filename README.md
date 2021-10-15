@@ -1,41 +1,113 @@
-# Named Entity Recognition (NER) with PyTorch
+[![tests](https://github.com/dayyass/pytorch-ner/actions/workflows/tests.yml/badge.svg)](https://github.com/dayyass/pytorch-ner/actions/workflows/tests.yml)
+[![linter](https://github.com/dayyass/pytorch-ner/actions/workflows/linter.yml/badge.svg)](https://github.com/dayyass/pytorch-ner/actions/workflows/linter.yml)
+[![codecov](https://codecov.io/gh/dayyass/pytorch-ner/branch/main/graph/badge.svg?token=WSB83O6GVV)](https://codecov.io/gh/dayyass/pytorch-ner)
 
-![test Status](https://github.com/dayyass/pytorch_ner/workflows/test/badge.svg)
-![lint Status](https://github.com/dayyass/pytorch_ner/workflows/lint/badge.svg)
-![License](https://img.shields.io/github/license/dayyass/pytorch_ner)
-![release (latest by date)](https://img.shields.io/github/v/release/dayyass/pytorch_ner)
+[![python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://github.com/dayyass/pytorch-ner#requirements)
+[![release (latest by date)](https://img.shields.io/github/v/release/dayyass/pytorch-ner)](https://github.com/dayyass/pytorch-ner/releases/latest)
+[![license](https://img.shields.io/github/license/dayyass/pytorch-ner?color=blue)](https://github.com/dayyass/pytorch-ner/blob/main/LICENSE)
+
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-black)](https://github.com/dayyass/pytorch-ner/blob/main/.pre-commit-config.yaml)
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-### About
-Pipeline for training NER models using PyTorch.<br/>
-ONNX export supported.<br/>
+[![pypi version](https://img.shields.io/pypi/v/pytorch-ner)](https://pypi.org/project/pytorch-ner)
+[![pypi downloads](https://img.shields.io/pypi/dm/pytorch-ner)](https://pypi.org/project/pytorch-ner)
+
+### Named Entity Recognition (NER) with PyTorch
+Pipeline for training **NER** models using **PyTorch**.
+
+**ONNX** export supported.
 
 ### Usage
-First, install dependencies:
+Instead of writing custom code for specific NER task, you just need:
+1. install pipeline:
+```shell script
+pip install pytorch-ner
 ```
-# clone repo   
-git clone https://github.com/dayyass/pytorch_ner.git
+2. run pipeline:
+- either in **terminal**:
+```shell script
+pytorch-ner-train --path_to_config config.yaml
+```
+- or in **python**:
+```python3
+import pytorch_ner
 
-# install dependencies   
-cd pytorch_ner
-pip install -r requirements.txt
+pytorch_ner.train(path_to_config="config.yaml")
 ```
 
-The user interface consists of only one file *config.yaml*.<br/>
-Change *config.yaml* to create the desired configuration and start the pipeline with the following command:
-```
-python main.py --config config.yaml
-```
-If *--config* argument is not specified, then used config.yaml.
+#### Config
+The user interface consists of only one file [**config.yaml**](https://github.com/dayyass/pytorch-ner/blob/main/config.yaml).<br/>
+Change it to create the desired configuration.
 
-To export trained model to ONNX use config.yaml:
+Default **config.yaml**:
+```yaml
+torch:
+  device: 'cpu'
+  seed: 42
+
+data:
+  train_data:
+    path: 'data/conll2003/train.txt'
+    sep: ' '
+    lower: true
+    verbose: true
+  valid_data:
+    path: 'data/conll2003/valid.txt'
+    sep: ' '
+    lower: true
+    verbose: true
+  test_data:
+    path: 'data/conll2003/test.txt'
+    sep: ' '
+    lower: true
+    verbose: true
+  token2idx:
+    min_count: 1
+    add_pad: true
+    add_unk: true
+
+dataloader:
+  preprocess: true
+  token_padding: '<PAD>'
+  label_padding: 'O'
+  percentile: 100
+  batch_size: 256
+
+model:
+  embedding:
+    embedding_dim: 128
+  rnn:
+    rnn_unit: LSTM  # GRU, RNN
+    hidden_size: 256
+    num_layers: 1
+    dropout: 0
+    bidirectional: true
+
+optimizer:
+  optimizer_type: Adam  # torch.optim
+  clip_grad_norm: 0.1
+  params:
+    lr: 0.001
+    weight_decay: 0
+    amsgrad: false
+
+train:
+  n_epoch: 10
+  verbose: true
+
+save:
+  path_to_folder: 'models'
+  export_onnx: true
+```
+
+**NOTE**: to export trained model to **ONNX** use the following config parameter:
 ```
 save:
-  export_onnx: True
+  export_onnx: true
 ```
 
-### Data Format:
-Text file containing separated tokens and labels on each line. Sentences are separated by empty line.
+#### Data Format
+Pipeline works with text file containing separated tokens and labels on each line. Sentences are separated by empty line.
 Labels should already be in necessary format, e.g. IO, BIO, BILUO, ...
 
 Example:
@@ -50,6 +122,15 @@ token_23    label_23
 ...
 ```
 
+#### Output
+After training the model, the pipeline will return the following files:
+- `model.pth` - pytorch NER model
+- `model.onnx` - onnx NER model (optional)
+- `token2idx.json` - mapping from token to its index
+- `label2idx.json` - mapping from label to its index
+- `config.yaml` - config that was used to train the model
+- `logging.txt` - logging file
+
 ### Models
 List of implemented models:
 - [x] BiLTSM
@@ -61,19 +142,15 @@ List of implemented models:
 - [ ] BiLTSMCNNAttn
 - [ ] BiLTSMCNNAttnCRF
 
-### Docker
-To simplify installation, you can deploy a container with all dependencies pre-installed.
+### Evaluation
+All results are obtained on CoNLL-2003 [dataset](https://github.com/dayyass/pytorch-ner/tree/develop/data/conll2003). We didn't search the best parameters.
 
-Build container:<br/>
-`$ docker build -t pytorch_ner .`
-
-
-Run container (add `--gpus all` to use GPUs):<br/>
-`$ docker container run --rm -it -v ${PWD}:/workspace -p 6006:6006 pytorch_ner`
-
+| Model  | Train F1-weighted | Validation F1-weighted | Test F1-weighted |
+| ------ | ----------------- | ---------------------- | ---------------- |
+| BiLSTM | 0.968             | 0.928                  | 0.876            |
 
 ### Requirements
-Python 3.6+
+Python >= 3.6
 
 ### Citation
 If you use **pytorch_ner** in a scientific publication, we would appreciate references to the following BibTex entry:
@@ -85,3 +162,5 @@ If you use **pytorch_ner** in a scientific publication, we would appreciate refe
     year         = {2020}
 }
 ```
+
+# TODO: docker cuda

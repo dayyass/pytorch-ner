@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from typing import Callable, DefaultDict, List, Optional
 
@@ -27,12 +28,13 @@ def masking(lengths: torch.Tensor) -> torch.Tensor:
 
 
 # TODO: clip_grad_norm
-def train_loop(
+def train_epoch(
     model: nn.Module,
     dataloader: DataLoader,
     criterion: Callable,
     optimizer: optim.Optimizer,
     device: torch.device,
+    clip_grad_norm: float,
     verbose: bool = True,
 ) -> DefaultDict[str, List[float]]:
     """
@@ -63,6 +65,14 @@ def train_loop(
 
         # backward pass
         loss.backward()
+
+        # gradient clipping
+        nn.utils.clip_grad_norm_(
+            model.parameters(),
+            max_norm=clip_grad_norm,
+            norm_type=2,
+        )
+
         optimizer.step()
         optimizer.zero_grad()
 
@@ -82,7 +92,7 @@ def train_loop(
     return metrics
 
 
-def validate_loop(
+def validate_epoch(
     model: nn.Module,
     dataloader: DataLoader,
     criterion: Callable,
@@ -136,58 +146,69 @@ def validate_loop(
 # TODO: add TensorBoard support
 # TODO: add EarlyStopping support
 # TODO: add ModelCheckpoint support
-def train(
+def train_loop(
     model: nn.Module,
-    trainloader: DataLoader,
-    valloader: DataLoader,
+    train_loader: DataLoader,
+    valid_loader: DataLoader,
     criterion: Callable,
     optimizer: optim.Optimizer,
     device: torch.device,
+    clip_grad_norm: float,
     n_epoch: int,
-    testloader: Optional[DataLoader] = None,
+    logger: logging.Logger,
     verbose: bool = True,
+    test_loader: Optional[DataLoader] = None,
 ):
     """
     Training / validation loop for n_epoch with final testing.
     """
 
+    # sanity check
+    logger.info("Sanity Check starting...")
+    tokens, _, lengths = next(iter(valid_loader))
+    tokens, lengths = tokens.to(device), lengths.to(device)
+    with torch.no_grad():
+        _ = model(tokens, lengths)
+    logger.info("Sanity Check passed!\n")
+
     for epoch in range(n_epoch):
 
         if verbose:
-            print(f"epoch [{epoch+1}/{n_epoch}]\n")
+            logger.info(f"epoch [{epoch+1}/{n_epoch}]\n")
 
-        train_metrics = train_loop(
+        train_metrics = train_epoch(
             model=model,
-            dataloader=trainloader,
+            dataloader=train_loader,
             criterion=criterion,
             optimizer=optimizer,
             device=device,
+            clip_grad_norm=clip_grad_norm,
             verbose=verbose,
         )
 
         if verbose:
             for metric_name, metric_list in train_metrics.items():
-                print(f"train {metric_name}: {np.mean(metric_list)}")
-            print()
+                logger.info(f"train {metric_name}: {np.mean(metric_list)}")
+            logger.info("\n")
 
-        val_metrics = validate_loop(
+        valid_metrics = validate_epoch(
             model=model,
-            dataloader=valloader,
+            dataloader=valid_loader,
             criterion=criterion,
             device=device,
             verbose=verbose,
         )
 
         if verbose:
-            for metric_name, metric_list in val_metrics.items():
-                print(f"val {metric_name}: {np.mean(metric_list)}")
-            print()
+            for metric_name, metric_list in valid_metrics.items():
+                logger.info(f"valid {metric_name}: {np.mean(metric_list)}")
+            logger.info("\n")
 
-    if testloader is not None:
+    if test_loader is not None:
 
-        test_metrics = validate_loop(
+        test_metrics = validate_epoch(
             model=model,
-            dataloader=testloader,
+            dataloader=test_loader,
             criterion=criterion,
             device=device,
             verbose=verbose,
@@ -195,5 +216,5 @@ def train(
 
         if verbose:
             for metric_name, metric_list in test_metrics.items():
-                print(f"test {metric_name}: {np.mean(metric_list)}")
-            print()
+                logger.info(f"test {metric_name}: {np.mean(metric_list)}")
+            logger.info("\n")

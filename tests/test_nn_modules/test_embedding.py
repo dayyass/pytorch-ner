@@ -13,11 +13,13 @@ from pytorch_ner.nn_modules.embedding import (
 )
 from pytorch_ner.prepare_data import prepare_conll_data_format
 
-token_seq, _ = prepare_conll_data_format(path="tests/data/conll.txt", verbose=False)
+token_seq, _ = prepare_conll_data_format(
+    path="tests/data/conll.txt", sep=" ", verbose=False
+)
 tokens = list(set(token for sentence in token_seq for token in sentence))
 
-_, word2vec_embeddings = load_word2vec(path="tests/data/word2vec.wv")
-_, glove_embeddings = load_glove(path="tests/data/glove.txt")
+_, word2vec_embeddings = load_word2vec(path="tests/data/word2vec.wv")  # type: ignore
+_, glove_embeddings = load_glove(path="tests/data/glove.txt")  # type: ignore
 
 
 embedding_w2v_freeze = EmbeddingPreTrained(word2vec_embeddings)
@@ -195,29 +197,29 @@ class TestEmbeddingPreTrained(unittest.TestCase):
 
     def test_embedding_pad(self):
         # word2vec
-        pad_embedding = embedding_w2v_freeze(torch.tensor([0]))
+        pad_embedding = embedding_w2v_freeze(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
-        pad_embedding = embedding_w2v_fine_tune(torch.tensor([0]))
+        pad_embedding = embedding_w2v_fine_tune(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
         # glove
-        pad_embedding = embedding_glove_freeze(torch.tensor([0]))
+        pad_embedding = embedding_glove_freeze(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
-        pad_embedding = embedding_glove_fine_tune(torch.tensor([0]))
+        pad_embedding = embedding_glove_fine_tune(torch.tensor([0], dtype=torch.long))
         self.assertTrue(torch.equal(pad_embedding, torch.zeros_like(pad_embedding)))
 
     def test_embedding_unk(self):
         # word2vec
-        unk_embedding = embedding_w2v_freeze(torch.tensor([1]))
+        unk_embedding = embedding_w2v_freeze(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding, embedding_w2v_freeze.embedding.weight[2:].mean(dim=0)
             )
         )
 
-        unk_embedding = embedding_w2v_fine_tune(torch.tensor([1]))
+        unk_embedding = embedding_w2v_fine_tune(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding, embedding_w2v_fine_tune.embedding.weight[2:].mean(dim=0)
@@ -225,14 +227,14 @@ class TestEmbeddingPreTrained(unittest.TestCase):
         )
 
         # glove
-        unk_embedding = embedding_glove_freeze(torch.tensor([1]))
+        unk_embedding = embedding_glove_freeze(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding, embedding_glove_freeze.embedding.weight[2:].mean(dim=0)
             )
         )
 
-        unk_embedding = embedding_glove_fine_tune(torch.tensor([1]))
+        unk_embedding = embedding_glove_fine_tune(torch.tensor([1], dtype=torch.long))
         self.assertTrue(
             torch.allclose(
                 unk_embedding,

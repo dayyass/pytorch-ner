@@ -1,13 +1,12 @@
 import json
-import os
+import shutil
+from pathlib import Path
 from typing import Dict
 
 import torch
 import torch.nn as nn
-import yaml
 
 from pytorch_ner.onnx import onnx_export_and_check
-from pytorch_ner.utils import mkdir, rmdir
 
 
 def save_model(
@@ -18,30 +17,28 @@ def save_model(
     config: Dict,
     export_onnx: bool = False,
 ):
-    # make empty dir
-    rmdir(path_to_folder)
-    mkdir(path_to_folder)
 
-    model.cpu()
-    model.eval()
+    path_to_save = Path(path_to_folder)
 
     # save torch model
-    torch.save(model.state_dict(), os.path.join(path_to_folder, "model.pth"))
+    model.cpu()
+    model.eval()
+    torch.save(model.state_dict(), path_to_save / "model.pth")
 
     # save token2idx
-    with open(file=os.path.join(path_to_folder, "token2idx.json"), mode="w") as fp:
+    with open(file=path_to_save / "token2idx.json", mode="w") as fp:
         json.dump(token2idx, fp)
 
     # save label2idx
-    with open(file=os.path.join(path_to_folder, "label2idx.json"), mode="w") as fp:
+    with open(file=path_to_save / "label2idx.json", mode="w") as fp:
         json.dump(label2idx, fp)
 
     # save config
-    with open(file=os.path.join(path_to_folder, "config.yaml"), mode="w") as fp:
-        yaml.dump(config, fp)
+    shutil.copy2(config["save"]["path_to_config"], path_to_save / "config.yaml")
 
     # save onnx model
     if export_onnx:
         onnx_export_and_check(
-            model=model, path_to_save=os.path.join(path_to_folder, "model.onnx")
-        )
+            model=model,
+            path_to_save=str(path_to_save / "model.onnx"),
+        )  # type: ignore

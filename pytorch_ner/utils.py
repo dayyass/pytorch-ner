@@ -1,3 +1,4 @@
+import importlib
 import os
 import random
 import shutil
@@ -14,6 +15,7 @@ def set_global_seed(seed: int):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.benchmark = False
     torch.backends.cudnn.deterministic = True
 
@@ -28,15 +30,6 @@ def to_numpy(tensor: torch.Tensor) -> np.ndarray:
     )
 
 
-def mkdir(path: str):
-    """
-    Make directory if not exists.
-    """
-
-    if not os.path.exists(path):
-        os.makedirs(path)
-
-
 def rmdir(path: str):
     """
     Remove directory if exists.
@@ -44,3 +37,16 @@ def rmdir(path: str):
 
     if os.path.exists(path):
         shutil.rmtree(path)
+
+
+def str_to_class(module_name, class_name):
+    """
+    Convert string to Python class object.
+    https://stackoverflow.com/questions/1176136/convert-string-to-python-class-object
+    """
+
+    # load the module, will raise ImportError if module cannot be loaded
+    module = importlib.import_module(module_name)
+    # get the class, will raise AttributeError if class cannot be found
+    cls = getattr(module, class_name)
+    return cls
