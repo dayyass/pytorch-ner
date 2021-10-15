@@ -18,8 +18,8 @@ token_seq, _ = prepare_conll_data_format(
 )
 tokens = list(set(token for sentence in token_seq for token in sentence))
 
-_, word2vec_embeddings = load_word2vec(path="tests/data/word2vec.wv")
-_, glove_embeddings = load_glove(path="tests/data/glove.txt")
+_, word2vec_embeddings = load_word2vec(path="tests/data/word2vec.wv")  # type: ignore
+_, glove_embeddings = load_glove(path="tests/data/glove.txt")  # type: ignore
 
 
 embedding_w2v_freeze = EmbeddingPreTrained(word2vec_embeddings)
