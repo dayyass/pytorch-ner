@@ -20,7 +20,7 @@ def get_config(path_to_config: str) -> Dict[str, Any]:
 
     config["save"]["path_to_folder"] = (
         Path(config["save"]["path_to_folder"])
-        / f"model_{datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')}"
+        / f"model_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}"
     )
 
     # mkdir if not exists

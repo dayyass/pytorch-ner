@@ -2,7 +2,7 @@ torch:
   device: 'cpu'
   seed: 42
 
-prepare_data:
+data:
   train_data:
     path: 'data/conll2003/train.txt'
     sep: ' '

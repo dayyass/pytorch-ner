@@ -39,25 +39,25 @@ def _train(
     # tokens / labels sequences
 
     train_token_seq, train_label_seq = prepare_conll_data_format(
-        path=config["prepare_data"]["train_data"]["path"],
-        sep=config["prepare_data"]["train_data"]["sep"],
-        lower=config["prepare_data"]["train_data"]["lower"],
-        verbose=config["prepare_data"]["train_data"]["verbose"],
+        path=config["data"]["train_data"]["path"],
+        sep=config["data"]["train_data"]["sep"],
+        lower=config["data"]["train_data"]["lower"],
+        verbose=config["data"]["train_data"]["verbose"],
     )
 
     valid_token_seq, valid_label_seq = prepare_conll_data_format(
-        path=config["prepare_data"]["valid_data"]["path"],
-        sep=config["prepare_data"]["valid_data"]["sep"],
-        lower=config["prepare_data"]["valid_data"]["lower"],
-        verbose=config["prepare_data"]["valid_data"]["verbose"],
+        path=config["data"]["valid_data"]["path"],
+        sep=config["data"]["valid_data"]["sep"],
+        lower=config["data"]["valid_data"]["lower"],
+        verbose=config["data"]["valid_data"]["verbose"],
     )
 
-    if "test_data" in config["prepare_data"]:
+    if "test_data" in config["data"]:
         test_token_seq, test_label_seq = prepare_conll_data_format(
-            path=config["prepare_data"]["test_data"]["path"],
-            sep=config["prepare_data"]["test_data"]["sep"],
-            lower=config["prepare_data"]["test_data"]["lower"],
-            verbose=config["prepare_data"]["test_data"]["verbose"],
+            path=config["data"]["test_data"]["path"],
+            sep=config["data"]["test_data"]["sep"],
+            lower=config["data"]["test_data"]["lower"],
+            verbose=config["data"]["test_data"]["verbose"],
         )
 
     # token2idx / label2idx
@@ -67,9 +67,9 @@ def _train(
 
     token2idx = get_token2idx(
         token2cnt=token2cnt,
-        min_count=config["prepare_data"]["token2idx"]["min_count"],
-        add_pad=config["prepare_data"]["token2idx"]["add_pad"],
-        add_unk=config["prepare_data"]["token2idx"]["add_unk"],
+        min_count=config["data"]["token2idx"]["min_count"],
+        add_pad=config["data"]["token2idx"]["add_pad"],
+        add_unk=config["data"]["token2idx"]["add_unk"],
     )
 
     label2idx = get_label2idx(label_set=label_set)
@@ -92,7 +92,7 @@ def _train(
         preprocess=config["dataloader"]["preprocess"],
     )
 
-    if "test_data" in config["prepare_data"]:
+    if "test_data" in config["data"]:
         test_set = NERDataset(
             token_seq=test_token_seq,
             label_seq=test_label_seq,
@@ -115,7 +115,7 @@ def _train(
         percentile=100,  # hardcoded
     )
 
-    if "test_data" in config["prepare_data"]:
+    if "test_data" in config["data"]:
         test_collator = NERCollator(
             token_padding_value=token2idx[config["dataloader"]["token_padding"]],
             label_padding_value=label2idx[config["dataloader"]["label_padding"]],
@@ -139,7 +139,7 @@ def _train(
         collate_fn=valid_collator,
     )
 
-    if "test_data" in config["prepare_data"]:
+    if "test_data" in config["data"]:
         test_loader = DataLoader(
             dataset=test_set,
             batch_size=1,  # hardcoded
@@ -207,7 +207,7 @@ def _train(
         model=model,
         train_loader=train_loader,
         valid_loader=valid_loader,
-        test_loader=test_loader if "test_data" in config["prepare_data"] else None,
+        test_loader=test_loader if "test_data" in config["data"] else None,
         criterion=criterion,
         optimizer=optimizer,
         device=device,
