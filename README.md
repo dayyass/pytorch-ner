@@ -162,5 +162,3 @@ If you use **pytorch_ner** in a scientific publication, we would appreciate refe
     year         = {2020}
 }
 ```
-
-# TODO: docker cuda
