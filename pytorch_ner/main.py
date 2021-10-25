@@ -7,7 +7,8 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from pytorch_ner.dataset import NERCollator, NERDataset
-from pytorch_ner.nn_modules.architecture import BiLSTM
+from pytorch_ner.nn_modules.architecture import BiLSTMAttn
+from pytorch_ner.nn_modules.attention import MultiheadSelfAttention
 from pytorch_ner.nn_modules.embedding import Embedding
 from pytorch_ner.nn_modules.linear import LinearHead
 from pytorch_ner.nn_modules.rnn import DynamicRNN
@@ -169,6 +170,13 @@ def _train(
         bidirectional=config["model"]["rnn"]["bidirectional"],
     )
 
+    attention_layer = MultiheadSelfAttention(
+        embed_dim=config["model"]["rnn"]["hidden_size"]
+        * (2 if config["model"]["rnn"]["bidirectional"] else 1),
+        num_heads=config["model"]["attn"]["num_heads"],
+        dropout=config["model"]["attn"]["dropout"],
+    )
+
     # TODO: add attention if needed in config
     linear_head = LinearHead(
         linear_head=nn.Linear(
@@ -182,9 +190,10 @@ def _train(
 
     # TODO: add model architecture in config
     # TODO: add attention if needed
-    model = BiLSTM(
+    model = BiLSTMAttn(
         embedding_layer=embedding_layer,
         rnn_layer=rnn_layer,
+        attention_layer=attention_layer,
         linear_head=linear_head,
     ).to(device)
 
