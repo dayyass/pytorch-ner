@@ -49,7 +49,7 @@ optimizer:
 train:
   n_epoch: 10
   verbose: true
-  tensorboard: ture
+  tensorboard: true
 
 save:
   path_to_folder: 'models/test_main/'
