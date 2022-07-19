@@ -4,6 +4,7 @@
 *.ipynb_checkpoints
 
 # cache
+*.pyc
 *__pycache__
 *.mypy_cache
 *.cache
