@@ -214,6 +214,7 @@ def _train(
         clip_grad_norm=config["optimizer"]["clip_grad_norm"],
         n_epoch=config["train"]["n_epoch"],
         verbose=config["train"]["verbose"],
+        tensorboard=config["train"]["tensorboard"],
         logger=logger,
     )
 

@@ -51,6 +51,7 @@ optimizer:
 train:
   n_epoch: 10
   verbose: true
+  tensorboard: true
 
 save:
   path_to_folder: 'models'

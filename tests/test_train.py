@@ -80,6 +80,7 @@ train_loop(
     clip_grad_norm=0.1,
     n_epoch=5,
     verbose=False,
+    tensorboard=True,
     logger=logger,
 )
 

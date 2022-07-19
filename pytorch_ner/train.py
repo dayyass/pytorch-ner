@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from pytorch_ner.metrics import calculate_metrics
@@ -155,6 +156,7 @@ def train_loop(
     device: torch.device,
     clip_grad_norm: float,
     n_epoch: int,
+    tensorboard: bool,
     logger: logging.Logger,
     verbose: bool = True,
     test_loader: Optional[DataLoader] = None,
@@ -162,6 +164,8 @@ def train_loop(
     """
     Training / validation loop for n_epoch with final testing.
     """
+    # Writer will output to ./runs/ directory by default
+    writer = SummaryWriter()
 
     # sanity check
     logger.info("Sanity Check starting...")
@@ -205,6 +209,9 @@ def train_loop(
             logger.info("\n")
 
     if test_loader is not None:
+        if tensorboard:
+            writer.add_scalar("Loss/train", np.mean((train_metrics["loss"])), epoch)
+            writer.add_scalar("Loss/val", np.mean((valid_metrics["loss"])), epoch)
 
         test_metrics = validate_epoch(
             model=model,
